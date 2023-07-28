@@ -1,16 +1,19 @@
-name: check
+name: CI/CD
 on:
   push:
-    branches:
-      - main
-      - master
-      - develop
-      - 'feature/**'
-env:
-  PROJECT_NAME: my_project
-  WORKFLOW: check
+    branches-ignore:
+      - 'dependabot/**'
+    paths-ignore:
+      - '.gitignore'
+      - '.mergify.yml'
+      - 'CHANGELOG.md'
+      - 'LICENSE'
+      - 'README.md'
+      - 'renovate.json'
+  pull_request:
+  workflow_dispatch:
 jobs:
-  run-unit-tests:
+  test:
     strategy:
       fail-fast: false
       matrix:
@@ -40,7 +43,13 @@ jobs:
 
       - name: Restore Python dependencies
         run: |
-          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
       - name: Test
         run: python -m unittest discover -s test -t .
+  deploy:
+    needs:
+      - test
+    uses: ./.github/workflows/deploy.yml
+    if: github.ref_name == 'master'
+    secrets: inherit
