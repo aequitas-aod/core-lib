@@ -14,6 +14,9 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 # Get dependencies from the requirements.txt file
 dependencies = (here / 'requirements.txt').read_text(encoding='utf-8').replace("==", ">=").splitlines()
 
+# Get Python version from .python-version file
+python_version = ">=" + (here / '.python-version').read_text(encoding='utf-8').strip()
+
 
 def format_git_describe_version(version):
     if '-' in version:
@@ -74,8 +77,11 @@ class GetDepsCommand(distutils.cmd.Command):
         pass
 
     def run(self):
+        print(f"python_requires='{python_version}'")
+        print(f"install_requires=[")
         for dep in dependencies:
-            print(dep)
+            print(f"   '{dep}',")
+        print(f"]")
 
 
 url = 'https://github.com/aequitas-aod/core-lib'
@@ -104,7 +110,7 @@ setup(
     # package_dir={'': 'src'},  # Optional
     packages=find_packages(),  # Required
     include_package_data=True,
-    python_requires='>=3.8.0',
+    python_requires=python_version,
     install_requires=dependencies,
     zip_safe=False,
     platforms="Independant",
