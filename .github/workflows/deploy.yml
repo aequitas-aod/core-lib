@@ -1,17 +1,7 @@
 name: deploy
 on:
-  workflow_run:
-    workflows:
-      - check
-    types:
-      - completed
-    branches:
-      - master
-      - main
-      - develop
-env:
-  PROJECT_NAME: my_project
-  WORKFLOW: deploy
+  workflow_call:
+  workflow_dispatch:
 jobs:
   deploy:
     concurrency:
@@ -39,13 +29,10 @@ jobs:
           python-version: ${{ steps.get-python-version.outputs.version }}
 
       - name: Restore Python dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-dev.txt
 
       - name: Change default logging level
-        run: sed -i -e 's/DEBUG/WARN/g' my_project/__init__.py
-
-      - name: Pack
-        run: python -m build
+        run: sed -i -e 's/DEBUG/WARN/g' aequitas/__init__.py
 
       - name: Get Node Version
         id: get-node-version
@@ -62,3 +49,4 @@ jobs:
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
