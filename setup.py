@@ -64,10 +64,10 @@ class GetVersionCommand(distutils.cmd.Command):
         print(version)
 
 
-class GetDepsCommand(distutils.cmd.Command):
+class GetMinimumPythonVersion(distutils.cmd.Command):
     """A custom command to get the current project commands inferred from `requirements.txt`."""
 
-    description = 'gets the project\'s install dependencies from `requirements.txt`'
+    description = 'gets the project\'s minimum Python version from `.python-version`'
     user_options = []
 
     def initialize_options(self):
@@ -77,11 +77,7 @@ class GetDepsCommand(distutils.cmd.Command):
         pass
 
     def run(self):
-        print(f"python_requires='{python_version}'")
-        print(f"install_requires=[")
-        for dep in dependencies:
-            print(f"   '{dep}',")
-        print(f"]")
+        print(".".join(python_version[2:].split(".")[:2]))
 
 
 url = 'https://github.com/aequitas-aod/core-lib'
@@ -122,6 +118,6 @@ setup(
     },
     cmdclass={
         'get_project_version': GetVersionCommand,
-        'get_project_deps': GetDepsCommand,
+        'get_minimum_python_version': GetMinimumPythonVersion,
     },
 )

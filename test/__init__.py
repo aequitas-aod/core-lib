@@ -1,8 +1,9 @@
 import unittest
-from aequitas import MyClass
+from aequitas import *
+
 
 class TestMyClass(unittest.TestCase):
     # test methods' names should begin with `test_`
     def test_my_method(self):
-        x = MyClass().my_method()
+        x = "Hello World"
         self.assertEqual("Hello World", x)

@@ -4,13 +4,5 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('aequitas')
 
-# this is the initial module of your app
-# this is executed whenever some client-code is calling `import aequitas` or `from aequitas import ...`
-# put your main classes here, eg:
-class MyClass:
-    def my_method(self):
-        return "Hello World"
-
-
 # let this be the last line of this file
-logger.info("aequitas loaded")
+logger.debug("Module %s correctly loaded", __name__)
