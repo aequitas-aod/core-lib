@@ -1,3 +1,10 @@
+## [1.1.0](https://github.com/aequitas-aod/core-lib/compare/1.0.0...1.1.0) (2023-07-31)
+
+
+### Features
+
+* implement and test demographic parity ([3584f02](https://github.com/aequitas-aod/core-lib/commit/3584f02ebbd00ed8b0ea34b7debe5c965e2e1120))
+
 ## 1.0.0 (2023-07-28)
 
 
