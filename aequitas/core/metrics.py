@@ -1,8 +1,8 @@
 import aequitas
+from aequitas.core import *
 import numpy as np
 import typing
 
-Scalar = aequitas.Scalar
 Probability = float
 Condition = typing.Callable[[np.array], np.array]
 ConditionOrScalar = typing.Union[Condition, Scalar]
@@ -18,7 +18,7 @@ def __ensure_is_condition(condition_or_value: ConditionOrScalar) -> Condition:
 
 
 def __ensure_finite_ratio(x: Scalar, y: Scalar) -> float:
-    if any(aequitas.is_zero(z) for z in (x, y)):
+    if any(is_zero(z) for z in (x, y)):
         return 0.0
     return min(x / y, y / x)
 
