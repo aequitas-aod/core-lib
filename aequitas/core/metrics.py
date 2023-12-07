@@ -28,10 +28,10 @@ def probability(x: np.array, x_cond: ConditionOrScalar) -> Probability:
 
 
 def conditional_probability(
-        y: np.array,
-        y_cond: ConditionOrScalar,
-        x: np.array,
-        x_cond: ConditionOrScalar,
+    y: np.array,
+    y_cond: ConditionOrScalar,
+    x: np.array,
+    x_cond: ConditionOrScalar,
 ) -> Probability:
     y_cond = __ensure_is_condition(y_cond)
     x_cond = __ensure_is_condition(x_cond)
@@ -68,5 +68,28 @@ def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionOrS
         probabilities.append(abs(prob_y_cond - prob_y))
     return np.array(probabilities)
 
+def __compute_false_rates(x: np.array, y: np.array, y_pred: np.array, x_cond: ConditionOrScalar,
+                       y_cond: ConditionOrScalar) -> Probability:
+    x_cond = __ensure_is_condition(x_cond)
+    x_is_x_value = x_cond(x)
+    y_cond = __ensure_is_condition(y_cond)
+    y_is_not_y_value = np.bitwise_not(y_cond(y))
+
+    cond1 = y_cond(y_pred[y_is_not_y_value & x_is_x_value]).sum() / (x_is_x_value & y_cond(y)).sum()
+    cond2 = y_cond(y_pred[y_is_not_y_value]).sum() / (y_cond(y)).sum()
+    return cond1 - cond2
+    
+def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array, y_cond:
+                            ConditionOrScalar) -> np.array:
+    y_cond = __ensure_is_condition(y_cond)
+    x_values = np.unique(x)
+    y_values = np.unique(y)
+        
+    probabilities = []
+
+    for x_value in x_values:
+        probabilities.append(__compute_false_rates(x, y, y_pred, x_value, y_cond))
+    
+    return np.array(probabilities) 
 
 aequitas.logger.debug("Module %s correctly loaded", __name__)
