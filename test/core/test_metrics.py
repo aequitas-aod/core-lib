@@ -44,16 +44,10 @@ class TestEqualisedOdds(Common):
 
         y_values = np.unique(y)
 
-        equalised_odds_fps = discrete_equalised_odds(x, y, y_pred, 0)
-        equalised_odds_fns = discrete_equalised_odds(x, y, y_pred, 1)
-        self.assertEqual(equalised_odds_fps.shape, y_values.shape)        
-        self.assertEqual(equalised_odds_fns.shape, y_values.shape)        
-        
-        eo1 = abs(equalised_odds_fps[0] - equalised_odds_fps[1])
-        eo2 = abs(equalised_odds_fns[0] - equalised_odds_fns[1])
-
-        self.assertInRange(eo1, 0.0, 0.1)
-        self.assertInRange(eo2, 0.0, 0.1)
+        differences = discrete_equalised_odds(x, y, y_pred)
+        for diff_row  in differences:
+            for diff in diff_row:            
+                self.assertInRange(diff, 0.0, 0.1)
 
     def test_equalised_odds_on_unfair_binary_case(self):
         x = self.unfair_dataset[:, 0]
@@ -62,16 +56,11 @@ class TestEqualisedOdds(Common):
 
         y_values = np.unique(y)
 
-        equalised_odds_fps = discrete_equalised_odds(x, y, y_pred, 0)
-        equalised_odds_fns = discrete_equalised_odds(x, y, y_pred, 1)
-        self.assertEqual(equalised_odds_fps.shape, y_values.shape)        
-        self.assertEqual(equalised_odds_fns.shape, y_values.shape)        
-        
-        eo1 = abs(equalised_odds_fps[0] - equalised_odds_fps[1])
-        eo2 = abs(equalised_odds_fns[0] - equalised_odds_fns[1])
+        differences = discrete_equalised_odds(x, y, y_pred)
+        for diff_row  in differences:
+            for diff in diff_row:            
+                self.assertInRange(diff, 0.3, 1.0)
 
-        self.assertInRange(eo1, 0.3, 1.0)
-        self.assertInRange(eo2, 0.3, 1.0)
 
 if __name__ == '__main__':
     unittest.main()

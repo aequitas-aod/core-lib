@@ -33,11 +33,11 @@ def conditional_probability(
     x: np.array,
     x_cond: ConditionOrScalar,
 ) -> Probability:
+    """Computes the probability of y given x"""
     y_cond = __ensure_is_condition(y_cond)
     x_cond = __ensure_is_condition(x_cond)
     x_is_x_value = x_cond(x)
     return y_cond(y[x_is_x_value]).sum() / x_is_x_value.sum()
-
 
 def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionOrScalar) -> np.array:
     """Computes demographic parity of `x`, w.r.t. `y_cond == True`, assuming that `x` is a discrete variable.
@@ -68,6 +68,7 @@ def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionOrS
         probabilities.append(abs(prob_y_cond - prob_y))
     return np.array(probabilities)
 
+
 def __compute_false_rates(x: np.array, y: np.array, y_pred: np.array, x_cond: ConditionOrScalar,
                        y_cond: ConditionOrScalar) -> Probability:
     x_cond = __ensure_is_condition(x_cond)
@@ -77,19 +78,22 @@ def __compute_false_rates(x: np.array, y: np.array, y_pred: np.array, x_cond: Co
 
     cond1 = y_cond(y_pred[y_is_not_y_value & x_is_x_value]).sum() / (x_is_x_value & y_cond(y)).sum()
     cond2 = y_cond(y_pred[y_is_not_y_value]).sum() / (y_cond(y)).sum()
-    return cond1 - cond2
+    return abs(cond1 - cond2)
     
-def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array, y_cond:
-                            ConditionOrScalar) -> np.array:
-    y_cond = __ensure_is_condition(y_cond)
+def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array) -> np.array:
     x_values = np.unique(x)
     y_values = np.unique(y)
         
-    probabilities = []
+    differences = []
 
-    for x_value in x_values:
-        probabilities.append(__compute_false_rates(x, y, y_pred, x_value, y_cond))
+    for y_value in y_values:
+        differences_x = []
+        for x_value in x_values:
+            differences_x.append(__compute_false_rates(x, y, y_pred, x_value,
+                                                       y_value))
+        differences.append(differences_x)
     
-    return np.array(probabilities) 
+    differences = np.array(differences)
+    return differences
 
 aequitas.logger.debug("Module %s correctly loaded", __name__)
