@@ -11,16 +11,19 @@ def uniform_binary_dataset(rows: int = 1000, columns: int = 2) -> np.array:
     return random.uniform(0, 1, size=(rows, columns)).round().astype(int)
 
 
-def uniform_binary_dataset_gt(rows: int = 1000, columns: int = 3) -> np.array:
+def uniform_binary_dataset_gt(rows: int = 1000, columns: int = 2) -> np.array:
     labels = uniform_binary_dataset(rows, 1) 
     noise = random.choice([0, 1], p=[0.8, 0.2], size=(rows, 1))
 
     preds = abs(labels-noise)
     
-    data = random.uniform(0, 1, size=(rows, 1)).round().astype(int)
+    data = []
+    for _ in range(columns-1):
+        data.append(np.array(random.uniform(0, 1, size=(rows, 1))).round().astype(int))
+    data = np.concatenate(data, axis=1)                            
     return np.concatenate((data, labels, preds), axis=1)
 
-def skewed_binary_dataset_gt(rows: int = 1000, columns: int = 3, p: float = 0.8) -> np.array:
+def skewed_binary_dataset_gt(rows: int = 1000, columns: int = 2, p: float = 0.8) -> np.array:
     xs = uniform_binary_dataset(rows, 1)
     preds = np.array([bernoulli(p)[0] * x for x in xs])
     labels = uniform_binary_dataset(rows, 1)
