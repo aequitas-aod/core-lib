@@ -8,12 +8,13 @@ import numpy as np
 DATASET_SIZE = 10000
 
 
-class Common(unittest.TestCase):
+class AbstractMetricTestCase(unittest.TestCase):
     def assertInRange(self, value, lower, upper):
         self.assertGreaterEqual(value, lower)
         self.assertLessEqual(value, upper)
 
-class TestDemographicParity(Common):
+
+class TestDemographicParity(AbstractMetricTestCase):
     def setUp(self) -> None:
         self.fair_dataset = uniform_binary_dataset(rows=DATASET_SIZE)
         self.unfair_dataset = skewed_binary_dataset(rows=DATASET_SIZE, p=0.9)
@@ -32,7 +33,8 @@ class TestDemographicParity(Common):
         self.assertEqual(parities.shape, (1,))
         self.assertInRange(parities[0], 0.4, 0.5)
 
-class TestEqualisedOdds(Common):
+
+class TestEqualisedOdds(AbstractMetricTestCase):
     def setUp(self) -> None:
         self.fair_dataset = uniform_binary_dataset_gt(rows=DATASET_SIZE)
         self.unfair_dataset = skewed_binary_dataset_gt(rows=DATASET_SIZE, p=0.9)
@@ -60,6 +62,10 @@ class TestEqualisedOdds(Common):
         for diff_row  in differences:
             for diff in diff_row:            
                 self.assertInRange(diff, 0.3, 1.0)
+
+
+# delete this abstract class, so that the included tests are not run
+del AbstractMetricTestCase
 
 
 if __name__ == '__main__':

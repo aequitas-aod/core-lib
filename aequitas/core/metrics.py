@@ -3,6 +3,7 @@ from aequitas.core import *
 import numpy as np
 import typing
 
+
 Probability = float
 Condition = typing.Callable[[np.array], np.array]
 ConditionOrScalar = typing.Union[Condition, Scalar]
@@ -38,6 +39,7 @@ def conditional_probability(
     x_cond = __ensure_is_condition(x_cond)
     x_is_x_value = x_cond(x)
     return y_cond(y[x_is_x_value]).sum() / x_is_x_value.sum()
+
 
 def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionOrScalar) -> np.array:
     """Computes demographic parity of `x`, w.r.t. `y_cond == True`, assuming that `x` is a discrete variable.
@@ -79,7 +81,8 @@ def __compute_false_rates(x: np.array, y: np.array, y_pred: np.array, x_cond: Co
     cond1 = y_cond(y_pred[y_is_not_y_value & x_is_x_value]).sum() / (x_is_x_value & y_cond(y)).sum()
     cond2 = y_cond(y_pred[y_is_not_y_value]).sum() / (y_cond(y)).sum()
     return abs(cond1 - cond2)
-    
+
+
 def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array) -> np.array:
     x_values = np.unique(x)
     y_values = np.unique(y)
@@ -95,5 +98,6 @@ def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array) -> np.ar
     
     differences = np.array(differences)
     return differences
+
 
 aequitas.logger.debug("Module %s correctly loaded", __name__)
