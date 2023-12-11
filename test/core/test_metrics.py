@@ -38,9 +38,9 @@ class TestEqualisedOdds(Common):
         self.unfair_dataset = skewed_binary_dataset_gt(rows=DATASET_SIZE, p=0.9)
 
     def test_equalised_odds_on_fair_binary_case(self):
-        x = self.fair_dataset[:, 0]
-        y = self.fair_dataset[:, 1]
-        y_pred = self.fair_dataset[:, 2]
+        x = self.fair_dataset[:, -3]
+        y = self.fair_dataset[:, -2]
+        y_pred = self.fair_dataset[:, -1]
 
         y_values = np.unique(y)
 
@@ -50,9 +50,9 @@ class TestEqualisedOdds(Common):
                 self.assertInRange(diff, 0.0, 0.1)
 
     def test_equalised_odds_on_unfair_binary_case(self):
-        x = self.unfair_dataset[:, 0]
-        y = self.unfair_dataset[:, 1]
-        y_pred = self.unfair_dataset[:, 2]
+        x = self.unfair_dataset[:, -3]
+        y = self.unfair_dataset[:, -2]
+        y_pred = self.unfair_dataset[:, -1]
 
         y_values = np.unique(y)
 
