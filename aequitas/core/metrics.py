@@ -121,5 +121,14 @@ def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array) -> np.ar
     differences = np.array(differences)
     return differences
 
+def discrete_disparate_impact(x: np.array,
+                              y: np.array,
+                              x_cond: ConditionOrScalar,
+                              y_cond: ConditionOrScalar) -> float:
+
+    prob1 = conditional_probability(y, y_cond, x, x_cond)
+    prob2 = conditional_probability(y, y_cond, x, abs(x_cond - 1))
+
+    return min((prob1/prob2, prob2/prob1))
 
 aequitas.logger.debug("Module %s correctly loaded", __name__)
