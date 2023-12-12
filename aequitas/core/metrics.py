@@ -129,6 +129,11 @@ def discrete_disparate_impact(x: np.array,
     prob1 = conditional_probability(y, y_cond, x, x_cond)
     prob2 = conditional_probability(y, y_cond, x, abs(x_cond - 1))
 
-    return min((prob1/prob2, prob2/prob1))
+    if prob1 == 0.0 or prob2 == 0.0:
+        return 0.0
+    else:
+        return min((prob1/prob2, prob2/prob1))
+
+
 
 aequitas.logger.debug("Module %s correctly loaded", __name__)
