@@ -125,6 +125,32 @@ def discrete_disparate_impact(x: np.array,
                               y: np.array,
                               x_cond: ConditionOrScalar,
                               y_cond: ConditionOrScalar) -> float:
+    """
+    Computes the disparate impact for a given classifier h (represented by its predictions h(X)).
+    A classifier suffers from disparate impact if its predictions disproportionately hurt people
+    with certain sensitive attributes. It is defined as the minimum between two fractions. 
+
+    One fraction is:
+
+    :math:`P(h(X) = 1 | X = 1) / P(h(X) = 1 | X = 0)`
+
+    while the other is its reciprocal. If the minimum between the two is exactly 1 then the classifier
+    doesn't suffer from disparate impact.
+
+    Also see:
+        * https://www.ijcai.org/proceedings/2020/0315.pdf, sec. 3, definition 3
+
+    :param x: (formally :math:`X`) vector of protected attribute (where each component gets values from a **discrete
+        distribution**, whose admissible values are :math:`{0, 1}`
+
+    :param y: (formally :math:`Y`) vector of values predicted by the binary classifier
+    
+    :param x_cond: current value assigned to :math:`X`
+
+    :param y_cond: current value assigned to :math:`Y`
+
+    :return: it returns the minimum between the two previously described fractions
+    """    
 
     prob1 = conditional_probability(y, y_cond, x, x_cond)
     prob2 = conditional_probability(y, y_cond, x, abs(x_cond - 1))
