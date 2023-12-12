@@ -3,6 +3,7 @@ from aequitas.core import *
 import numpy as np
 import typing
 
+
 Probability = float
 Condition = typing.Callable[[np.array], np.array]
 ConditionOrScalar = typing.Union[Condition, Scalar]
@@ -28,11 +29,12 @@ def probability(x: np.array, x_cond: ConditionOrScalar) -> Probability:
 
 
 def conditional_probability(
-        y: np.array,
-        y_cond: ConditionOrScalar,
-        x: np.array,
-        x_cond: ConditionOrScalar,
+    y: np.array,
+    y_cond: ConditionOrScalar,
+    x: np.array,
+    x_cond: ConditionOrScalar,
 ) -> Probability:
+    """Computes the probability of y given x"""
     y_cond = __ensure_is_condition(y_cond)
     x_cond = __ensure_is_condition(x_cond)
     x_is_x_value = x_cond(x)
@@ -67,6 +69,57 @@ def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionOrS
         prob_y_cond = conditional_probability(y, y_cond, x, x_value)
         probabilities.append(abs(prob_y_cond - prob_y))
     return np.array(probabilities)
+
+
+def __compute_false_rates(x: np.array, y: np.array, y_pred: np.array, x_cond: ConditionOrScalar,
+                       y_cond: ConditionOrScalar) -> Probability:
+    # used to compute the differences contained in the array returned by the
+    # function discrete_equalised_odds (see its documentation)
+    x_cond = __ensure_is_condition(x_cond)
+    x_is_x_value = x_cond(x)
+    y_cond = __ensure_is_condition(y_cond)
+    y_is_not_y_value = np.bitwise_not(y_cond(y))
+
+    cond1 = y_cond(y_pred[y_is_not_y_value & x_is_x_value]).sum() / (x_is_x_value & y_cond(y)).sum()
+    cond2 = y_cond(y_pred[y_is_not_y_value]).sum() / (y_cond(y)).sum()
+    return abs(cond1 - cond2)
+
+
+def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array) -> np.array:
+    """Computes the equalised odds for a given classifier h (represented by its predictions h(X)).
+        A classifier satisfies equalised odds if its predictions are independent of the protected
+        attribute given the labels. The following must hold for all unique values of Y and all the unique values of X. 
+
+    More formally:
+        :math:`eo_ij = \|P[h(X) \mid X = x_j, Y = y_i] - P[h(X) \mid Y = y_i]\|`
+
+    Also see:
+        * https://www.ijcai.org/proceedings/2020/0315.pdf, sec. 3, definition 2
+
+    :param x: (formally :math:`X`) vector of protected attribute (where each component gets values from a **discrete
+        distribution**, whose admissible values are :math:`{x_1, x_2, ..., x_n}`
+
+    :param y: (formally :math:`Y`) vector of ground truth values
+    
+    :param y_pred: (formally :math:`h(X)`) vector of predicted values
+
+    :return: a math:`m x n` array where :math:`m` is the number of unique values of Y and :math:`n` is the number 
+        of unique values of X. Each element of the array :math:`eo` contains the previously defined difference. """
+    
+    x_values = np.unique(x)
+    y_values = np.unique(y)
+        
+    differences = []
+
+    for y_value in y_values:
+        differences_x = []
+        for x_value in x_values:
+            differences_x.append(__compute_false_rates(x, y, y_pred, x_value,
+                                                       y_value))
+        differences.append(differences_x)
+    
+    differences = np.array(differences)
+    return differences
 
 
 aequitas.logger.debug("Module %s correctly loaded", __name__)

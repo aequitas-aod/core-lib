@@ -1,4 +1,5 @@
 VERSION
+*.swp
 
 tmp/
 .idea/
