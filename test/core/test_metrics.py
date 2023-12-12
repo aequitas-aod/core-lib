@@ -76,7 +76,12 @@ class TestDisparateImpact(AbstractMetricTestCase):
         disparate_impact = discrete_disparate_impact(x, y, 1, 1)
         self.assertInRange(disparate_impact, 0.7, 1.3)
 
+    def test_disparate_impact_on_unfair_dataset(self):
+        x = self.unfair_dataset[:, 0]
+        y = self.unfair_dataset[:, 1]
 
+        disparate_impact = discrete_disparate_impact(x, y, 1, 1)
+        self.assertTrue(disparate_impact < 0.5 or disparate_impact > 1.5)
 
 
 # delete this abstract class, so that the included tests are not run
