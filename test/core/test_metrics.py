@@ -2,9 +2,9 @@ from test import uniform_binary_dataset, skewed_binary_dataset, uniform_binary_d
 from aequitas.core.metrics import discrete_demographic_parities
 from aequitas.core.metrics import discrete_equalised_odds
 from aequitas.core.metrics import discrete_disparate_impact
+from aequitas.core.metrics import discete_equal_opportunity
 import unittest
 import numpy as np
-
 
 DATASET_SIZE = 10000
 
@@ -45,11 +45,9 @@ class TestEqualisedOdds(AbstractMetricTestCase):
         y = self.fair_dataset[:, -2]
         y_pred = self.fair_dataset[:, -1]
 
-        y_values = np.unique(y)
-
         differences = discrete_equalised_odds(x, y, y_pred)
-        for diff_row  in differences:
-            for diff in diff_row:            
+        for diff_row in differences:
+            for diff in diff_row:
                 self.assertInRange(diff, 0.0, 0.1)
 
     def test_equalised_odds_on_unfair_binary_case(self):
@@ -57,12 +55,11 @@ class TestEqualisedOdds(AbstractMetricTestCase):
         y = self.unfair_dataset[:, -2]
         y_pred = self.unfair_dataset[:, -1]
 
-        y_values = np.unique(y)
-
         differences = discrete_equalised_odds(x, y, y_pred)
-        for diff_row  in differences:
-            for diff in diff_row:            
+        for diff_row in differences:
+            for diff in diff_row:
                 self.assertInRange(diff, 0.3, 1.0)
+
 
 class TestDisparateImpact(AbstractMetricTestCase):
     def setUp(self) -> None:
@@ -84,9 +81,22 @@ class TestDisparateImpact(AbstractMetricTestCase):
         self.assertTrue(disparate_impact < 0.5 or disparate_impact > 1.5)
 
 
+class TestEqualOpportunity(AbstractMetricTestCase):
+    def setUp(self) -> None:
+        self.fair_dataset = uniform_binary_dataset_gt(rows=DATASET_SIZE)
+        self.unfair_dataset = skewed_binary_dataset_gt(rows=DATASET_SIZE)
+
+    def test_equal_opportunity_on_fair_dataset(self):
+        x = self.fair_dataset[:, -3]
+        y = self.fair_dataset[:, -2]
+        y_pred = self.fair_dataset[:, -1]
+
+        differences = discete_equal_opportunity(x, y, y_pred)
+        for diff in differences:
+            self.assertInRange(diff, 0.0, 0.1)
+
 # delete this abstract class, so that the included tests are not run
 del AbstractMetricTestCase
-
 
 if __name__ == '__main__':
     unittest.main()
