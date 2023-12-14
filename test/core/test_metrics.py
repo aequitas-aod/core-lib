@@ -95,6 +95,16 @@ class TestEqualOpportunity(AbstractMetricTestCase):
         for diff in differences:
             self.assertInRange(diff, 0.0, 0.1)
 
+    def test_equal_opportunity_on_unfair_dataset(self):
+        x = self.unfair_dataset[:, -3]
+        y = self.unfair_dataset[:, -2]
+        y_pred = self.unfair_dataset[:, -1]
+
+        differences = discrete_equal_opportunity(x, y, y_pred)
+        for diff in differences:
+            self.assertInRange(diff, 0.3, 1.0)
+
+
 # delete this abstract class, so that the included tests are not run
 del AbstractMetricTestCase
 
