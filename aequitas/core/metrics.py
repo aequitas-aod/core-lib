@@ -142,8 +142,7 @@ def discrete_disparate_impact(x: np.array, y: np.array, x_cond: ConditionLike, y
     else:
         return min((prob1 / prob2, prob2 / prob1))
 
-
-def discete_equal_opportunity(x: np.array, y: np.array, y_pred: np.array) -> np.array:
+def discrete_equal_opportunity(x: np.array, y: np.array, y_pred: np.array) -> np.array:
     x_values = np.unique(x)
     differences = []
     y_cond = Condition.ensure(1)
