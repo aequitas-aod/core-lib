@@ -1,6 +1,7 @@
 from test import uniform_binary_dataset, skewed_binary_dataset, uniform_binary_dataset_gt, skewed_binary_dataset_gt
 from aequitas.core.metrics import discrete_demographic_parities
 from aequitas.core.metrics import discrete_equalised_odds
+from aequitas.core.metrics import discrete_disparate_impact
 import unittest
 import numpy as np
 
@@ -62,6 +63,25 @@ class TestEqualisedOdds(AbstractMetricTestCase):
         for diff_row  in differences:
             for diff in diff_row:            
                 self.assertInRange(diff, 0.3, 1.0)
+
+class TestDisparateImpact(AbstractMetricTestCase):
+    def setUp(self) -> None:
+        self.fair_dataset = uniform_binary_dataset(rows=DATASET_SIZE)
+        self.unfair_dataset = skewed_binary_dataset(rows=DATASET_SIZE, p=0.9)
+
+    def test_disparate_impact_on_fair_dataset(self):
+        x = self.fair_dataset[:, 0]
+        y = self.fair_dataset[:, 1]
+
+        disparate_impact = discrete_disparate_impact(x, y, 1, 1)
+        self.assertInRange(disparate_impact, 0.7, 1.3)
+
+    def test_disparate_impact_on_unfair_dataset(self):
+        x = self.unfair_dataset[:, 0]
+        y = self.unfair_dataset[:, 1]
+
+        disparate_impact = discrete_disparate_impact(x, y, 1, 1)
+        self.assertTrue(disparate_impact < 0.5 or disparate_impact > 1.5)
 
 
 # delete this abstract class, so that the included tests are not run
