@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/aequitas-aod/core-lib/compare/1.2.0...1.2.1) (2023-12-14)
+
+
+### Bug Fixes
+
+* inlcude .python-version in build ([eddfc2e](https://github.com/aequitas-aod/core-lib/commit/eddfc2edf3bf94eb829a542204c3ec4156db72a4))
+
 ## [1.2.0](https://github.com/aequitas-aod/core-lib/compare/1.1.0...1.2.0) (2023-12-14)
 
 
