@@ -3,7 +3,6 @@ from aequitas.core import *
 import numpy as np
 from aequitas.core.conditions import Condition, ConditionLike
 
-
 Probability = float
 
 
@@ -142,6 +141,17 @@ def discrete_disparate_impact(x: np.array, y: np.array, x_cond: ConditionLike, y
         return 0.0
     else:
         return min((prob1 / prob2, prob2 / prob1))
+
+
+def discete_equal_opportunity(x: np.array, y: np.array, y_pred: np.array) -> np.array:
+    x_values = np.unique(x)
+    differences = []
+    y_cond = Condition.ensure(1)
+
+    for val in x_values:
+        differences.append(__compute_false_rates(x=x, y=y, y_pred=y_pred, x_cond=val, y_cond=y_cond))
+
+    return np.array(differences)
 
 
 aequitas.logger.debug("Module %s correctly loaded", __name__)
