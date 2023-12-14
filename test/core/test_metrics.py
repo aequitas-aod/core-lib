@@ -2,7 +2,7 @@ from test import uniform_binary_dataset, skewed_binary_dataset, uniform_binary_d
 from aequitas.core.metrics import discrete_demographic_parities
 from aequitas.core.metrics import discrete_equalised_odds
 from aequitas.core.metrics import discrete_disparate_impact
-from aequitas.core.metrics import discete_equal_opportunity
+from aequitas.core.metrics import discrete_equal_opportunity
 import unittest
 import numpy as np
 
@@ -91,7 +91,7 @@ class TestEqualOpportunity(AbstractMetricTestCase):
         y = self.fair_dataset[:, -2]
         y_pred = self.fair_dataset[:, -1]
 
-        differences = discete_equal_opportunity(x, y, y_pred)
+        differences = discrete_equal_opportunity(x, y, y_pred)
         for diff in differences:
             self.assertInRange(diff, 0.0, 0.1)
 
