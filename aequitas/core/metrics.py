@@ -1,21 +1,10 @@
 import aequitas
 from aequitas.core import *
 import numpy as np
-import typing
+from aequitas.core.conditions import Condition, ConditionLike
 
 
 Probability = float
-Condition = typing.Callable[[np.array], np.array]
-ConditionOrScalar = typing.Union[Condition, Scalar]
-
-
-def __ensure_is_condition(condition_or_value: ConditionOrScalar) -> Condition:
-    if aequitas.isinstance(condition_or_value, Scalar):
-        def check_condition(vector: np.array) -> Condition:
-            return vector == condition_or_value
-        return check_condition
-    else:
-        return condition_or_value
 
 
 def __ensure_finite_ratio(x: Scalar, y: Scalar) -> float:
@@ -24,24 +13,19 @@ def __ensure_finite_ratio(x: Scalar, y: Scalar) -> float:
     return min(x / y, y / x)
 
 
-def probability(x: np.array, x_cond: ConditionOrScalar) -> Probability:
+def probability(x: np.array, x_cond: ConditionLike) -> Probability:
     return x_cond(x).mean()
 
 
-def conditional_probability(
-    y: np.array,
-    y_cond: ConditionOrScalar,
-    x: np.array,
-    x_cond: ConditionOrScalar,
-) -> Probability:
+def conditional_probability(y: np.array, y_cond: ConditionLike, x: np.array, x_cond: ConditionLike) -> Probability:
     """Computes the probability of y given x"""
-    y_cond = __ensure_is_condition(y_cond)
-    x_cond = __ensure_is_condition(x_cond)
+    y_cond = Condition.ensure(y_cond)
+    x_cond = Condition.ensure(x_cond)
     x_is_x_value = x_cond(x)
     return y_cond(y[x_is_x_value]).sum() / x_is_x_value.sum()
 
 
-def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionOrScalar) -> np.array:
+def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionLike) -> np.array:
     """Computes demographic parity of `x`, w.r.t. `y_cond == True`, assuming that `x` is a discrete variable.
 
     More formally:
@@ -61,7 +45,7 @@ def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionOrS
 
     :return: the array :math:`[dp_1, \ldots, dp_n]` (one value for each possible value of `X`)
     """
-    y_cond = __ensure_is_condition(y_cond)
+    y_cond = Condition.ensure(y_cond)
     x_values = np.unique(x)
     prob_y = probability(y, y_cond)
     probabilities = []
@@ -71,13 +55,13 @@ def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionOrS
     return np.array(probabilities)
 
 
-def __compute_false_rates(x: np.array, y: np.array, y_pred: np.array, x_cond: ConditionOrScalar,
-                       y_cond: ConditionOrScalar) -> Probability:
-    # used to compute the differences contained in the array returned by the
+def __compute_false_rates(x: np.array, y: np.array, y_pred: np.array, x_cond: ConditionLike,
+                          y_cond: ConditionLike) -> Probability:
+    #  used to compute the differences contained in the array returned by the
     # function discrete_equalised_odds (see its documentation)
-    x_cond = __ensure_is_condition(x_cond)
+    x_cond = Condition.ensure(x_cond)
     x_is_x_value = x_cond(x)
-    y_cond = __ensure_is_condition(y_cond)
+    y_cond = Condition.ensure(y_cond)
     y_is_not_y_value = np.bitwise_not(y_cond(y))
 
     cond1 = y_cond(y_pred[y_is_not_y_value & x_is_x_value]).sum() / (x_is_x_value & y_cond(y)).sum()
@@ -105,26 +89,23 @@ def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array) -> np.ar
 
     :return: a math:`m x n` array where :math:`m` is the number of unique values of Y and :math:`n` is the number 
         of unique values of X. Each element of the array :math:`eo` contains the previously defined difference. """
-    
+
     x_values = np.unique(x)
     y_values = np.unique(y)
-        
+
     differences = []
 
     for y_value in y_values:
         differences_x = []
         for x_value in x_values:
-            differences_x.append(__compute_false_rates(x, y, y_pred, x_value,
-                                                       y_value))
+            differences_x.append(__compute_false_rates(x, y, y_pred, x_value, y_value))
         differences.append(differences_x)
-    
+
     differences = np.array(differences)
     return differences
 
-def discrete_disparate_impact(x: np.array,
-                              y: np.array,
-                              x_cond: ConditionOrScalar,
-                              y_cond: ConditionOrScalar) -> float:
+
+def discrete_disparate_impact(x: np.array, y: np.array, x_cond: ConditionLike, y_cond: ConditionLike) -> float:
     """
     Computes the disparate impact for a given classifier h (represented by its predictions h(X)).
     A classifier suffers from disparate impact if its predictions disproportionately hurt people
@@ -150,16 +131,17 @@ def discrete_disparate_impact(x: np.array,
     :param y_cond: current value assigned to :math:`Y`
 
     :return: it returns the minimum between the two previously described fractions
-    """    
+    """
+    x_cond = Condition.ensure(x_cond)
+    y_cond = Condition.ensure(y_cond)
 
     prob1 = conditional_probability(y, y_cond, x, x_cond)
-    prob2 = conditional_probability(y, y_cond, x, abs(x_cond - 1))
+    prob2 = conditional_probability(y, y_cond, x, x_cond.negate())
 
     if prob1 == 0.0 or prob2 == 0.0:
         return 0.0
     else:
-        return min((prob1/prob2, prob2/prob1))
-
+        return min((prob1 / prob2, prob2 / prob1))
 
 
 aequitas.logger.debug("Module %s correctly loaded", __name__)
