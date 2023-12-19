@@ -35,7 +35,7 @@ def discrete_demographic_parities(x: np.array, y: np.array, y_cond: ConditionLik
         * https://developers.google.com/machine-learning/glossary/fairness?hl=en#demographic-parity
 
     :param x: (formally :math:`X`) vector of protected attribute (where each component gets values from a **discrete
-        distribution**, whose admissible values are :math:`{x_1, x_2, ..., x_n}`
+        distribution**, whose admissible values are :math:`{x_1, x_2, ..., x_n}`)
 
     :param y: (formally :math:`Y`) vector of predicted outcomes
 
@@ -80,7 +80,7 @@ def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array) -> np.ar
         * https://www.ijcai.org/proceedings/2020/0315.pdf, sec. 3, definition 2
 
     :param x: (formally :math:`X`) vector of protected attribute (where each component gets values from a **discrete
-        distribution**, whose admissible values are :math:`{x_1, x_2, ..., x_n}`
+        distribution**, whose admissible values are :math:`{x_1, x_2, ..., x_n}`)
 
     :param y: (formally :math:`Y`) vector of ground truth values
     
@@ -121,7 +121,7 @@ def discrete_disparate_impact(x: np.array, y: np.array, x_cond: ConditionLike, y
         * https://www.ijcai.org/proceedings/2020/0315.pdf, sec. 3, definition 3
 
     :param x: (formally :math:`X`) vector of protected attribute (where each component gets values from a **discrete
-        distribution**, whose admissible values are :math:`{0, 1}`
+        distribution**, whose admissible values are :math:`{0, 1}`)
 
     :param y: (formally :math:`Y`) vector of values predicted by the binary classifier
     
@@ -141,6 +141,7 @@ def discrete_disparate_impact(x: np.array, y: np.array, x_cond: ConditionLike, y
         return 0.0
     else:
         return min((prob1 / prob2, prob2 / prob1))
+
 
 def discrete_equal_opportunity(x: np.array, y: np.array, y_pred: np.array) -> np.array:
     x_values = np.unique(x)
