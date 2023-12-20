@@ -143,10 +143,10 @@ def discrete_disparate_impact(x: np.array, y: np.array, x_cond: ConditionLike, y
         return min((prob1 / prob2, prob2 / prob1))
 
 
-def discrete_equal_opportunity(x: np.array, y: np.array, y_pred: np.array) -> np.array:
+def discrete_equal_opportunity(x: np.array, y: np.array, y_pred: np.array, y_cond: ConditionLike) -> np.array:
     x_values = np.unique(x)
     differences = []
-    y_cond = Condition.ensure(1)
+    y_cond = Condition.ensure(y_cond)
 
     for val in x_values:
         differences.append(__compute_false_rates(x=x, y=y, y_pred=y_pred, x_cond=val, y_cond=y_cond))
