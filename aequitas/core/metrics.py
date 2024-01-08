@@ -144,6 +144,34 @@ def discrete_disparate_impact(x: np.array, y: np.array, x_cond: ConditionLike, y
 
 
 def discrete_equal_opportunity(x: np.array, y: np.array, y_pred: np.array, y_cond: ConditionLike) -> np.array:
+    """
+        Computes the  equal opportunity for a given classifier h (represented by its predictions h(X)).
+        A classifier satisfies the equal opportunity metric if both protected and unprotected groups have equal False
+        Negative Rates (FNR), i.e. the probability of a subject in the positive class to have a negative predicted value.
+
+        Formally, in a binary classification task such that Y = 1 (Y = 0) indicates that a certain subject belongs to
+        the positive (negative) class and A is the binary sensitive attribute which allows to distinguish between
+        protected and unprotected groups, equal opportunity is satisfied by classifier h(X) if:
+
+        :math:`P(h(X) = 0 | Y = 1, A = 1) - P(h(X) = 0 | Y = 1, A = 0)`
+
+        Also see:
+            * https://dl.acm.org/doi/10.1145/3194770.3194776, sec. 3.1, definition 3.2.3
+
+        :param x: (formally :math:`X`) vector of protected attribute (where each component gets values from a **discrete
+            distribution**, whose admissible values are :math:`{0, 1}`)
+
+        :param y: (formally :math:`Y`) vector of values predicted by the binary classifier
+
+        :param x_cond: current value assigned to :math:`X`
+
+        :param y_cond: current value assigned to :math:`Y`
+
+        :return: it returns a one dimensional array with as many elements as the number of distinct values for the
+            protected attribute. For each of these values the equal opportunity metric is computed using the formula
+            above.
+
+        """
     x_values = np.unique(x)
     differences = []
     y_cond = Condition.ensure(y_cond)
