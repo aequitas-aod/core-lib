@@ -182,4 +182,37 @@ def discrete_equal_opportunity(x: np.array, y: np.array, y_pred: np.array, y_con
     return np.array(differences)
 
 
+def discrete_predictive_parity(x: np.array, y: np.array, y_pred: np.array,
+                               y_cond: ConditionLike) -> np.array:
+    y_cond = Condition.ensure(y_cond)
+    y_pred_is_y_value = y_cond(y_pred)
+
+    x_values = np.unique(x)
+    probabilities = []
+    for x_value in (x_values if len(x_values) > 2 else x_values[:1]):
+        x_cond = Condition.ensure(x_value)
+        x_is_x_value = x_cond(x)
+        x_is_not_x_value = np.bitwise_not(x_is_x_value)
+
+        num1 = y_cond(y[y_pred_is_y_value & x_is_x_value]).sum()
+        den1 = (x_is_x_value & y_pred_is_y_value).sum()
+
+
+        num2 = y_cond(y[y_pred_is_y_value & x_is_not_x_value]).sum()
+        den2 = (x_is_not_x_value & y_pred_is_y_value).sum()
+
+        if num1 == 0 or den1 == 0:
+            prob1 = 0
+        else:
+            prob1 = num1 / den1
+
+        if num2 == 0 or den2 == 0:
+            prob2 = 0
+        else:
+            prob2 = num2 / den2
+
+        probabilities.append(abs(prob1 - prob2))
+    return np.array(probabilities)
+
+
 aequitas.logger.debug("Module %s correctly loaded", __name__)
