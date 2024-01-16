@@ -3,6 +3,7 @@ from aequitas.core.metrics import discrete_demographic_parities
 from aequitas.core.metrics import discrete_equalised_odds
 from aequitas.core.metrics import discrete_disparate_impact
 from aequitas.core.metrics import discrete_equal_opportunity
+from aequitas.core.metrics import discrete_predictive_parity
 import unittest
 import numpy as np
 
@@ -104,6 +105,28 @@ class TestEqualOpportunity(AbstractMetricTestCase):
         for diff in differences:
             self.assertInRange(diff, 0.3, 1.0)
 
+class TestPredictiveParity(AbstractMetricTestCase):
+    def setUp(self) -> None:
+        self.fair_dataset = uniform_binary_dataset_gt(rows=DATASET_SIZE)
+        self.unfair_dataset = skewed_binary_dataset_gt(rows=DATASET_SIZE)
+
+    def test_predictive_parity_on_fair_dataset(self):
+        x = self.fair_dataset[:, -3]
+        y = self.fair_dataset[:, -2]
+        y_pred = self.fair_dataset[:, -1]
+
+        differences = discrete_predictive_parity(x, y, y_pred, 1)
+        for diff in differences:
+            self.assertInRange(diff, 0.0, 0.1)
+
+    def test_predictive_parity_on_unfair_dataset(self):
+        x = self.unfair_dataset[:, -3]
+        y = self.unfair_dataset[:, -2]
+        y_pred = self.unfair_dataset[:, -1]
+
+        differences = discrete_predictive_parity(x, y, y_pred, 1)
+        for diff in differences:
+            self.assertInRange(diff, 0.3, 1.0)
 
 # delete this abstract class, so that the included tests are not run
 del AbstractMetricTestCase
