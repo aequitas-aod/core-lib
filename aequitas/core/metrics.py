@@ -242,5 +242,36 @@ def discrete_predictive_parity(x: np.array, y: np.array, y_pred: np.array,
         probabilities.append(abs(prob1 - prob2))
     return np.array(probabilities)
 
+def __compute_bins(pred_probs: np.array):
+    scores = np.arange(0.0, 1.1, 0.1)
+    bins = [(round(score, 1), 0) for score in scores]
+
+    for bin_ in bins:
+        bin_[1] = (np.round(pred_probs, 1) == bin_[0]).sum()
+
+    return bins
+
+def discrete_calibration(x: np.array, y: np.array, 
+                         pred_probs: np.array,
+                         y_cond: ConditionLike) -> np.array:
+    scores = np.arange(0.0, 1.1, 0.1)
+    y_cond = Condtion.ensure(y_cond)
+    x_values = np.unique(x)
+
+
+    probabilities = []
+    for x_value in x_values:
+        x_cond = Condition.ensure(x_value)
+        x_is_x_value = x_cond(x)
+        row = []
+        for score in scores:
+            score = Condition.ensure(score)
+            pred_prob_is_score = score(pred_probs)
+
+            num = y_cond(y[pred_prob_is_score & x_is_x_value]).sum()
+            den = (pred_prob_is_score & x_is_x_value).sum()
+            row.append(num/den)
+        probabilities.append(row)
+    return np.array(probabilities)
 
 aequitas.logger.debug("Module %s correctly loaded", __name__)
