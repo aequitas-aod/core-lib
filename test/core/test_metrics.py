@@ -1,11 +1,16 @@
-from test import uniform_binary_dataset, skewed_binary_dataset, uniform_binary_dataset_gt, skewed_binary_dataset_gt
+from test import uniform_binary_dataset
+from test import skewed_binary_dataset
+from test import uniform_binary_dataset_gt
+from test import skewed_binary_dataset_gt
+from test import uniform_binary_dataset_probs
+from test import skewed_binary_dataset_probs
 from aequitas.core.metrics import discrete_demographic_parities
 from aequitas.core.metrics import discrete_equalised_odds
 from aequitas.core.metrics import discrete_disparate_impact
 from aequitas.core.metrics import discrete_equal_opportunity
 from aequitas.core.metrics import discrete_predictive_parity
+from aequitas.core.metrics import discrete_calibration
 import unittest
-import numpy as np
 
 DATASET_SIZE = 10000
 
@@ -105,6 +110,7 @@ class TestEqualOpportunity(AbstractMetricTestCase):
         for diff in differences:
             self.assertInRange(diff, 0.3, 1.0)
 
+
 class TestPredictiveParity(AbstractMetricTestCase):
     def setUp(self) -> None:
         self.fair_dataset = uniform_binary_dataset_gt(rows=DATASET_SIZE)
@@ -127,6 +133,37 @@ class TestPredictiveParity(AbstractMetricTestCase):
         differences = discrete_predictive_parity(x, y, y_pred, 1)
         for diff in differences:
             self.assertInRange(diff, 0.3, 1.0)
+
+class TestCalibration(AbstractMetricTestCase):
+    def setUp(self) -> None:
+        self.fair_dataset = uniform_binary_dataset_probs(rows=DATASET_SIZE)
+        self.unfair_dataset = skewed_binary_dataset_probs(rows=DATASET_SIZE)
+
+    def test_calibration_on_fair_dataset(self):
+        x = self.fair_dataset[:, -3]
+        pred_probs = self.fair_dataset[:, -2]
+        y = self.fair_dataset[:, -1]
+
+        probabilities = discrete_calibration(x, y, pred_probs, 1)
+        for i in range(probabilities.shape[0]):
+            for j in range(probabilities.shape[1]):
+                differences = abs(probabilities[:, j] - probabilities[i, j])
+                for diff in differences:
+                    self.assertInRange(diff, 0.0, 0.1)
+
+    def test_calibration_on_unfair_dataset(self):
+        x = self.unfair_dataset[:, -3]
+        pred_probs = self.unfair_dataset[:, -2]
+        y = self.unfair_dataset[:, -1]
+        bad_differences = 0
+        probabilities = discrete_calibration(x, y, pred_probs, 1)
+        for i in range(probabilities.shape[0]):
+            for j in range(probabilities.shape[1]):
+                differences = abs(probabilities[:, j] - probabilities[i, j])
+                for diff in differences:
+                    if diff > 0.1:
+                        bad_differences += 1
+        self.assertGreater(bad_differences, 0)
 
 # delete this abstract class, so that the included tests are not run
 del AbstractMetricTestCase
