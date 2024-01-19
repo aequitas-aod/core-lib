@@ -67,6 +67,7 @@ def skewed_binary_dataset_probs(rows: int = 1000, columns: int = 2, p: float =
 
     probs = np.array([random.normal(0.3, 0.1, 1) if x == 0 else
                       random.normal(0.7, 0.1, 1) for x in xs])
-    labels = (probs >= 0.5).astype(int)
+    # labels = (probs >= 0.5).astype(int)
+    labels = uniform_binary_dataset(rows, 1)
 
     return np.concatenate((features, xs, probs, labels), axis=1)
