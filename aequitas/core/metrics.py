@@ -246,6 +246,43 @@ def discrete_predictive_parity(x: np.array, y: np.array, y_pred: np.array,
 def discrete_calibration(x: np.array, y: np.array,
                          pred_probs: np.array,
                          y_cond: ConditionLike) -> np.array:
+    """
+        A classifier is said to be calibrated if for any predicted probability score :math:`s`, subjects in both
+        protected and unprotected groups have equal probability to truly belong to the positive class.
+        This definition is similar to predictive parity, except that it considers the fraction of correct positive
+        predictions for any value of :math:`S`. In this implementation :math:`S` is a sequence of 11 bins each
+        representing a probability score rounded to the first decimal. Given the predicted probabilities for the
+        elements in the dataset rounded to the first decimal, the bins are populated and the calibration probabilities computed as a consequence.
+
+        Formally, in a binary classification task such that :math:`Y = 1` (:math:`Y = 0`) indicates that a certain
+        subject belongs to the positive (negative) class and A is the binary sensitive attribute which allows to
+        distinguish between protected and unprotected groups, a classifier is calibrated if:
+
+        :math:`P(Y = 1 | S = s, A = 1) = P(Y = 1 | S = s, A = 0)` for any value of :math:`S`.
+
+        :math:`S` is the predicted probability (rounded to the first decimal digit) for a certain
+         classification :math:`c`. That is:
+
+        :math:`P(Y = c | A, X)` where :math:`A` is the protected attribute and :math:`X` represents the other features.
+
+        Also see:
+            * https://dl.acm.org/doi/10.1145/3194770.3194776, sec. 3.3, definition 3.3.1
+
+        :param x: (formally :math:`X`) vector of protected attribute (where each component gets values from a **discrete
+            distribution**, whose admissible values are :math:`{0, 1}`)
+
+        :param y: (formally :math:`Y`) vector of ground truth labels (whose admissible values are :math:`{0, 1}`)
+
+        :param pred_probs: vector of predicted probabilities, one for each element in the dataset.
+
+        :param y_cond: value assigned to :math:`Y` that represents the positive class
+
+        :return: a :math:`n x m` where :math:`n` is the number of unique values for the protected attribute :math:`A`
+        and :math:`m` is the vector of probability scores :math:`S`. Each element of this array contains the quantity
+        :math:`P(Y = 1 | S = s, A = a)`.
+
+
+    """
     scores = np.round(np.arange(0.0, 1.1, 0.1),1)
     pred_probs = np.round(pred_probs, 1)    
     y_cond = Condition.ensure(y_cond)
