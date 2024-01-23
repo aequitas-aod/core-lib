@@ -74,7 +74,7 @@ def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array) -> np.ar
         attribute given the labels. The following must hold for all unique values of Y and all the unique values of X. 
 
     More formally:
-        :math:`eo_ij = \|P[h(X) \mid X = x_j, Y = y_i] - P[h(X) \mid Y = y_i]\|`
+        :math:`eo_ij = |P(h(X) | X = x_j, Y = y_i) - P(h(X) | Y = y_i)|`
 
     Also see:
         * https://www.ijcai.org/proceedings/2020/0315.pdf, sec. 3, definition 2
@@ -86,8 +86,10 @@ def discrete_equalised_odds(x: np.array, y: np.array, y_pred: np.array) -> np.ar
     
     :param y_pred: (formally :math:`h(X)`) vector of predicted values
 
-    :return: a math:`m x n` array where :math:`m` is the number of unique values of Y and :math:`n` is the number 
-        of unique values of X. Each element of the array :math:`eo` contains the previously defined difference. """
+    :return: a :math:`n, m` array where :math:`n` is the number of unique values of Y and :math:`m` is the number
+        of unique values of X. Each element of the array :math:`eo` contains the previously defined difference.
+
+    """
 
     x_values = np.unique(x)
     y_values = np.unique(y)
@@ -204,7 +206,7 @@ def discrete_predictive_parity(x: np.array, y: np.array, y_pred: np.array,
 
         :param y: (formally :math:`Y`) vector of ground truth values
 
-        :param y_pred (formally :math:`h(X)`): vector of predicted values
+        :param y_pred: (formally :math:`h(X)`) vector of predicted values
 
         :param y_cond: current value assigned to :math:`Y`
 
@@ -258,12 +260,12 @@ def discrete_calibration(x: np.array, y: np.array,
         subject belongs to the positive (negative) class and A is the binary sensitive attribute which allows to
         distinguish between protected and unprotected groups, a classifier is calibrated if:
 
-        :math:`P(Y = 1 | S = s, A = 1) = P(Y = 1 | S = s, A = 0)` for any value of :math:`S`.
+            :math:`P(Y = 1 | S = s, A = 1) = P(Y = 1 | S = s, A = 0)` for any value of :math:`S`.
 
-        :math:`S` is the predicted probability (rounded to the first decimal digit) for a certain
-         classification :math:`c`. That is:
+        :math:`S` is the predicted probability (rounded to the first decimal digit) for a certain classification :math:`c`.
+            That is:
 
-        :math:`P(Y = c | A, X)` where :math:`A` is the protected attribute and :math:`X` represents the other features.
+            :math:`P(Y = c | A, X)` where :math:`A` is the protected attribute and :math:`X` represents the other features.
 
         Also see:
             * https://dl.acm.org/doi/10.1145/3194770.3194776, sec. 3.3, definition 3.3.1
@@ -277,11 +279,10 @@ def discrete_calibration(x: np.array, y: np.array,
 
         :param y_cond: value assigned to :math:`Y` that represents the positive class
 
-        :return: a :math:`n x m` where :math:`n` is the number of unique values for the protected attribute :math:`A`
-        and :math:`m` is the vector of probability scores :math:`S`. Each element of this array contains the quantity
-        :math:`P(Y = 1 | S = s, A = a)`.
-
-
+        :return: a :math:`n, m` matrix where :math:`n` is the number of unique values for the protected attribute :math:`A`
+            and :math:`m` is the vector of probability scores :math:`S`. Each element of this array contains the quantity
+            :math:`P(Y = 1 | S = s, A = a)`.
+            
     """
     scores = np.round(np.arange(0.0, 1.1, 0.1),1)
     pred_probs = np.round(pred_probs, 1)    
