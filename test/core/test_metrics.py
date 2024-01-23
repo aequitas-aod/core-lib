@@ -10,6 +10,7 @@ from aequitas.core.metrics import discrete_disparate_impact
 from aequitas.core.metrics import discrete_equal_opportunity
 from aequitas.core.metrics import discrete_predictive_parity
 from aequitas.core.metrics import discrete_calibration
+from aequitas.core.metrics import discrete_class_balance
 import unittest
 
 DATASET_SIZE = 10000
@@ -165,6 +166,41 @@ class TestCalibration(AbstractMetricTestCase):
                         bad_differences += 1
         self.assertGreater(bad_differences, 0)
 
+
+
+class TestClassBalance(AbstractMetricTestCase):
+    def setUp(self) -> None:
+        self.fair_dataset = uniform_binary_dataset_probs(rows=DATASET_SIZE)
+        self.unfair_dataset = skewed_binary_dataset_probs(rows=DATASET_SIZE)
+
+    def test_class_balance_on_fair_dataset(self):
+        x = self.fair_dataset[:, -3]
+        pred_probs = self.fair_dataset[:, -2]
+        y = self.fair_dataset[:, -1]
+
+        expected_probs = discrete_class_balance(x, y, pred_probs, 1)        
+        bad_differences = 0 
+        for i in range(len(expected_probs)):
+            for j in range(len(expected_probs)):
+                diff = abs(expected_probs[i] - expected_probs[j])
+                if diff > 0.1:
+                    bad_differences += 1
+        self.assertEqual(bad_differences, 0)
+
+
+    def test_class_balance_on_unfair_dataset(self):
+        x = self.unfair_dataset[:, -3]
+        pred_probs = self.unfair_dataset[:, -2]
+        y = self.unfair_dataset[:, -1]
+
+        expected_probs = discrete_class_balance(x, y, pred_probs, 1)        
+        bad_differences = 0 
+        for i in range(len(expected_probs)):
+            for j in range(len(expected_probs)):
+                diff = abs(expected_probs[i] - expected_probs[j])
+                if diff > 0.1:
+                    bad_differences += 1
+        self.assertGreater(bad_differences, 0)
 # delete this abstract class, so that the included tests are not run
 del AbstractMetricTestCase
 
