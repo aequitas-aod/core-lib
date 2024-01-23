@@ -304,10 +304,41 @@ def discrete_calibration(x: np.array, y: np.array,
         probabilities.append(row)
     return np.array(probabilities)
 
+
 def discrete_class_balance(x: np.array,
                            y: np.array,
                            pred_probs: np.array,
                            y_cond: ConditionLike) -> np.array:
+    """
+            A classifier satisfies the "balance for the positive (negative) class" definition if subjects belonging to
+            the positive (negative) class from both the protected and unprotected groups have equal average predicted
+            probability score :math:`S`.
+
+            Formally, in a binary classification task such that :math:`Y = 1` (:math:`Y = 0`) indicates that a certain
+            subject belongs to the positive (negative) class and A is the binary sensitive attribute which allows to
+            distinguish between protected and unprotected groups, a classifier satisfies this definition if:
+
+            :math:`E(S | Y = 1, A = 1) = E(S | Y = 1, A = 0)` where :math:`E` is the expected value.
+
+            :math:`S` is the predicted probability for a certain classification.
+
+            Also see:
+                * https://dl.acm.org/doi/10.1145/3194770.3194776, sec. 3.3, definition 3.3.3 and 3.3.4
+
+            :param x: (formally :math:`X`) vector of protected attribute (where each component gets values from a
+                **discrete distribution**, whose admissible values are :math:`{0, 1}`)
+
+            :param y: (formally :math:`Y`) vector of ground truth labels (whose admissible values are :math:`{0, 1}`)
+
+            :param pred_probs: vector of predicted probabilities, one for each element in the dataset.
+
+            :param y_cond: value assigned to :math:`Y` that represents the positive (negative) class
+
+            :return: a :math:`n x 1` array where :math:`n` is the number of unique values for the protected attribute :math:`A`.
+                Each element of this array contains the expected probability score
+                for a subject with a given value of the protected attribute and belonging to the positive (negative) class.
+
+        """
     y_cond = Condition.ensure(y_cond)
     y_is_y_value = y_cond(y)
     x_values = np.unique(x)
