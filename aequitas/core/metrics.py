@@ -304,5 +304,19 @@ def discrete_calibration(x: np.array, y: np.array,
         probabilities.append(row)
     return np.array(probabilities)
 
-
+def discrete_class_balance(x: np.array,
+                           y: np.array,
+                           pred_probs: np.array,
+                           y_cond: ConditionLike) -> np.array:
+    y_cond = Condition.ensure(y_cond)
+    y_is_y_value = y_cond(y)
+    x_values = np.unique(x)
+    expected_pred_probs = []
+    for x_value in x_values:
+        x_cond = Condition.ensure(x_value)
+        x_is_x_value = x_cond(x)
+        expected_pred_prob = pred_probs[x_is_x_value & y_is_y_value].mean()
+        expected_pred_probs.append([expected_pred_prob])
+    res = np.array(expected_pred_probs)
+    return res 
 aequitas.logger.debug("Module %s correctly loaded", __name__)
