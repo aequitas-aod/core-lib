@@ -16,14 +16,6 @@ class StructuredDataset(datasets.StructuredDataset, ABC):
         super(StructuredDataset, self).__init__(**kwargs)
 
     @property
-    def strategy(self):
-        return self.__strategy
-
-    @property
     @abstractmethod
     def metrics(self):
         raise NotImplementedError
-
-    def __custom_preprocessing(self, df: pd.DataFrame) -> pd.DataFrame:
-        print("Applying custom preprocessing")
-        return self.strategy.custom_preprocessing(df)
