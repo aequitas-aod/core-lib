@@ -1,11 +1,12 @@
 import logging
-
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # keep this line at the top of this file
 __all__ = ["logger", "isinstance"]
 
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('aequitas')
 """General logger to be used in all `aequitas*` modules"""
 
