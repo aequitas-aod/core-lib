@@ -1,5 +1,5 @@
-from aequitas.datasets.structured_dataset import StructuredDataset
-from aequitas.datasets.concrete_dataset_factories import BinaryLabelDatasetFactory
+from aequitas.core.datasets.structured_dataset import StructuredDataset
+from aequitas.core.datasets.concrete_dataset_factories import BinaryLabelDatasetFactory
 
 
 class CreateDataset:

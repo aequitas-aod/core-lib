@@ -1,5 +1,5 @@
-from aequitas.datasets.dataset_factory import DatasetFactory
-from aequitas.datasets.binary_label_dataset import BinaryLabelDataset
+from aequitas.core.datasets.dataset_factory import DatasetFactory
+from aequitas.core.datasets.binary_label_dataset import BinaryLabelDataset
 
 
 class BinaryLabelDatasetFactory(DatasetFactory):
@@ -7,6 +7,5 @@ class BinaryLabelDatasetFactory(DatasetFactory):
         pass
 
     def create_dataset(self, **kwargs) -> BinaryLabelDataset:
-        print("DEBUG:calling BinaryLabelDataset constructor")
         ds = BinaryLabelDataset(favorable_label=1., unfavorable_label=0., **kwargs)
         return ds

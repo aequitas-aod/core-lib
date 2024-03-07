@@ -1,6 +1,5 @@
 import aif360.datasets as datasets
-import pandas as pd
-from aequitas.imputation_strategies.imputation_strategy import MissingValuesImputationStrategy
+from aequitas.core.imputation_strategies.imputation_strategy import MissingValuesImputationStrategy
 from abc import ABC, abstractmethod
 
 

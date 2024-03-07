@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from aequitas.datasets.structured_dataset import StructuredDataset
+from aequitas.core.datasets.structured_dataset import StructuredDataset
 
 
 class DatasetFactory(ABC):

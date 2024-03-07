@@ -1,4 +1,4 @@
-from aequitas.imputation_strategies.imputation_strategy import MissingValuesImputationStrategy
+from aequitas.core.imputation_strategies.imputation_strategy import MissingValuesImputationStrategy
 import pandas as pd
 
 
@@ -7,5 +7,4 @@ class MCMCImputationStrategy(MissingValuesImputationStrategy):
         super(MCMCImputationStrategy, self).__init__()
     
     def custom_preprocessing(self, df: pd.DataFrame) -> pd.DataFrame:
-        print("DEBUG:applying MCMC imputation strategy")
         return df

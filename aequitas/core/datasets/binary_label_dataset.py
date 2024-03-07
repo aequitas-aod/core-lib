@@ -1,5 +1,5 @@
-from aequitas.datasets.structured_dataset import StructuredDataset
-from aequitas.metrics.binary_label_dataset_metric import BinaryLabelDatasetScoresMetric
+from aequitas.core.datasets.structured_dataset import StructuredDataset
+from aequitas.core.metrics.binary_label_dataset_metric import BinaryLabelDatasetScoresMetric
 
 
 class BinaryLabelDataset(StructuredDataset):
@@ -9,10 +9,6 @@ class BinaryLabelDataset(StructuredDataset):
         self._unfavorable_label = float(unfavorable_label)
 
         super(BinaryLabelDataset, self).__init__(**kwargs)
-
-    @classmethod
-    def new_instance(cls):
-        return cls
 
     @property
     def metrics(self, **kwargs):
