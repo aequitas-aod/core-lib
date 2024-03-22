@@ -15,4 +15,4 @@ class BinaryLabelDataset(StructuredDataset, datasets.BinaryLabelDataset):
 
     @property
     def metrics(self, **kwargs):
-        return BinaryLabelDatasetScoresMetric(**kwargs)
+        return BinaryLabelDatasetScoresMetric(self, **kwargs)

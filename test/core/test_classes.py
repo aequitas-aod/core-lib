@@ -31,8 +31,7 @@ class TestClasses(unittest.TestCase):
         cd = CreateDataset(dataset_type="binary label")
         ds = cd.create_dataset(imputation_strategy=strategy, df=df, label_names=['label'],
                                protected_attribute_names=['feat'], scores_names=["scores"])
-        bldsm = BinaryLabelDatasetScoresMetric(ds)
-        x = bldsm.scores_metric()
+        x = ds.metrics.scores_metric()
         self.assertTrue(ds is not None)
         self.assertTrue(x is not None)
 
