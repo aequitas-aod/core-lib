@@ -3,7 +3,6 @@ VERSION
 
 tmp/
 .idea/
-.vscode/
 .DS_Store
 *.data
 demo/
@@ -117,7 +116,7 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+.venv*
 env/
 venv/
 ENV/

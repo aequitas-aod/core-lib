@@ -1,0 +1,59 @@
+{
+    // Usare IntelliSense per informazioni sui possibili attributi.
+    // Al passaggio del mouse vengono visualizzate le descrizioni degli attributi esistenti.
+    // Per altre informazioni, visitare: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run All Tests",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "unittest",
+            "args": [
+                "discover",
+                "-s",
+                "test/",
+                "-p",
+                "test_*.py",
+                "-v"
+            ],
+        },
+        {
+            "name": "Compute Test-Coverage",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "coverage",
+            "args": [
+                "run",
+                "-m",
+                "unittest",
+                "discover",
+                "-s",
+                "test/",
+                "-p",
+                "test_*.py",
+                "-v"
+            ],
+        },
+        {
+            "name": "Test-Coverage Report",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "coverage",
+            "args": [
+                "report",
+                "-m"
+            ],
+        },
+        {
+            "name": "Compile All .py Files",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "compileall",
+            "args": [
+                "aequitas",
+                "tests"
+            ],
+        },
+    ]
+}
