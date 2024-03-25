@@ -6,13 +6,11 @@ import aif360.datasets as datasets
 
 class BinaryLabelDataset(StructuredDataset, datasets.BinaryLabelDataset):
 
-    def __init__(self, imputation_strategy: MissingValuesImputationStrategy,
-                 favorable_label, unfavorable_label, label_names, protected_attribute_names, **kwargs):
-
-        super(BinaryLabelDataset, self).__init__(imputation_strategy=imputation_strategy, favorable_label=favorable_label,
-                                                 unfavorable_label=unfavorable_label, label_names=label_names,
-                                                 protected_attribute_names=protected_attribute_names, **kwargs)
+    def __init__(self, **kwargs):
+        self.params = kwargs
+        super(BinaryLabelDataset, self).__init__(**kwargs)
 
     @property
-    def metrics(self, **kwargs):
-        return BinaryLabelDatasetScoresMetric(self, **kwargs)
+    def metrics(self):
+        dataset = BinaryLabelDataset(**self.params)
+        return BinaryLabelDatasetScoresMetric(dataset=dataset)

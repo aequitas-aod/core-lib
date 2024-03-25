@@ -2,14 +2,14 @@ import aequitas
 
 from .structured_dataset import StructuredDataset
 from .binary_label_dataset import BinaryLabelDataset
-from .multi_class_label_dataset import MultiClassLabelDataset
+from .multi_class_label_dataset import MulticlassLabelDataset
 
 
 _DATASET_TYPES = {
     "binary label": BinaryLabelDataset,
-    "multi class": MultiClassLabelDataset,
+    "multi class": MulticlassLabelDataset,
     "binary": BinaryLabelDataset,
-    "multiclass": MultiClassLabelDataset,
+    "multiclass": MulticlassLabelDataset,
 }
 
 
