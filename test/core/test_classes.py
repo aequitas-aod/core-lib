@@ -11,10 +11,13 @@ class TestBinaryLabelDataset(unittest.TestCase):
 
     def test_dataset_creation_via_factory(self):
         ds = create_dataset("binary label",
+                            # parameters of aequitas.BinaryLabelDataset init
+                            unprivileged_groups=[{'prot_attr': 0}],
+                            privileged_groups=[{'prot_attr': 1}],
                             # parameters of aif360.StructuredDataset init
                             df=generate_binary_label_dataframe(),
                             label_names=['label'],
-                            protected_attribute_names=['feat'],
+                            protected_attribute_names=['prot_attr'],
                             # parameters of aequitas.StructuredDataset init
                             imputation_strategy=MCMCImputationStrategy(),
                             # parameters of aif360.BinaryLabelDataset init
@@ -26,10 +29,13 @@ class TestBinaryLabelDataset(unittest.TestCase):
 
     def test_dataset_creation_with_scores_via_factory(self):
         ds = create_dataset("binary label",
+                            # parameters of aequitas.BinaryLabelDataset
+                            unprivileged_groups=[{'prot_attr': 0}],
+                            privileged_groups=[{'prot_attr': 1}],
                             # parameters of aif360.StructuredDataset init
                             df=generate_binary_label_dataframe_with_scores(),
                             label_names=['label'],
-                            protected_attribute_names=['feat'],
+                            protected_attribute_names=['prot_attr'],
                             scores_names=['scores'],
                             # parameters of aequitas.StructuredDataset init
                             imputation_strategy=MCMCImputationStrategy(),
@@ -41,10 +47,13 @@ class TestBinaryLabelDataset(unittest.TestCase):
 
     def test_metrics_on_dataset(self):
         ds = create_dataset("binary label",
+                            # parameters of aequitas.BinaryLabelDataset
+                            unprivileged_groups=[{'prot_attr': 0}],
+                            privileged_groups=[{'prot_attr': 1}],
                             # parameters of aif360.StructuredDataset init
                             df=generate_binary_label_dataframe_with_scores(),
                             label_names=['label'],
-                            protected_attribute_names=['feat'],
+                            protected_attribute_names=['prot_attr'],
                             scores_names=['scores'],
                             # parameters of aequitas.StructuredDataset init
                             imputation_strategy=MCMCImputationStrategy(),
