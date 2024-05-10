@@ -1,6 +1,7 @@
 from aequitas.core.datasets.structured_dataset import StructuredDataset
 from aequitas.core.imputation_strategies.imputation_strategy import MissingValuesImputationStrategy
 from aequitas.core.metrics.binary_label_dataset_scores_metric import BinaryLabelDatasetScoresMetric
+from aif360.metrics import BinaryLabelDatasetMetric
 import aif360.datasets as datasets
 
 
@@ -14,9 +15,18 @@ class BinaryLabelDataset(StructuredDataset, datasets.BinaryLabelDataset):
 
     @property
     def metrics(self):
-        dataset = BinaryLabelDataset(unprivileged_groups=self.unprivileged_groups,
-                                     privileged_groups=self.privileged_groups,
-                                     **self.kwargs)
-        return BinaryLabelDatasetScoresMetric(dataset=dataset,
+        # dataset = BinaryLabelDataset(unprivileged_groups=self.unprivileged_groups,
+                                     # privileged_groups=self.privileged_groups,
+                                     # **self.kwargs)
+        return BinaryLabelDatasetMetric(dataset=self,
+                                        unprivileged_groups=self.unprivileged_groups,
+                                        privileged_groups=self.privileged_groups)
+
+    @property
+    def scores_metrics(self):
+        # dataset = BinaryLabelDataset(unprivileged_groups=self.unprivileged_groups,
+        # privileged_groups=self.privileged_groups,
+        # **self.kwargs)
+        return BinaryLabelDatasetScoresMetric(dataset=self,
                                               unprivileged_groups=self.unprivileged_groups,
                                               privileged_groups=self.privileged_groups)
