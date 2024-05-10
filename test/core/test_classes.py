@@ -1,4 +1,5 @@
 import unittest
+import pandas as pd
 from test import generate_binary_label_dataframe
 from test import generate_binary_label_dataframe_with_scores
 
@@ -54,17 +55,17 @@ class TestBinaryLabelDataset(unittest.TestCase):
                             df=generate_binary_label_dataframe_with_scores(),
                             label_names=['label'],
                             protected_attribute_names=['prot_attr'],
-                            scores_names=['scores'],
+                            scores_names=['score'],
                             # parameters of aequitas.StructuredDataset init
                             imputation_strategy=MCMCImputationStrategy(),
                             # parameters of aif360.BinaryLabelDataset init
                             favorable_label=1,
                             unfavorable_label=0)
-        self.assertIsInstance(ds.metrics, BinaryLabelDatasetScoresMetric)
+        self.assertIsInstance(ds.scores_metrics, BinaryLabelDatasetScoresMetric)
         self.assertIsNotNone(ds)
-        score = ds.metrics.new_fancy_metric()
-        self.assertIsNotNone(score)
         score = ds.metrics.disparate_impact()
+        self.assertIsNotNone(score)
+        score = ds.scores_metrics.new_fancy_metric()
         self.assertIsNotNone(score)
 
 
