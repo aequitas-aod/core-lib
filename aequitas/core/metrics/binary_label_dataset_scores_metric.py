@@ -6,6 +6,6 @@ class BinaryLabelDatasetScoresMetric(metrics.BinaryLabelDatasetMetric):
     def __init__(self, **kwargs):
         super(BinaryLabelDatasetScoresMetric, self).__init__(**kwargs)
 
-    def new_fancy_metric(self):
+    def new_fancy_metric(self) -> float:
         # TODO: change name and behaviour
-        return self.disparate_impact()
+        return np.max(self.dataset.scores)
