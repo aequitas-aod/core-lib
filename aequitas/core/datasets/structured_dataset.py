@@ -16,3 +16,8 @@ class StructuredDataset(datasets.StructuredDataset, ABC):
     @abstractmethod
     def metrics(self):
         raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def scores_metrics(self):
+        raise NotImplementedError
