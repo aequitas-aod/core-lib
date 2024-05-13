@@ -84,13 +84,34 @@ class TestBinaryLabelDataset(unittest.TestCase):
         self.assertIsInstance(ds.scores_metrics, BinaryLabelDatasetScoresMetric)
         self.assertIsNotNone(ds)
 
+        ### METRICS USING LABELS ###
+
+        # Disparate Impact
         score = ds.metrics.disparate_impact()
         print(f"Disparate impact: {score}")
         self.assertIsNotNone(score)
 
+        # Statistical Parity
         score = ds.metrics.statistical_parity_difference()
         print(f"Statistical Parity: {score}")
         self.assertIsNotNone(score)
+
+        # Dirichlet-smoothed base rates
+        score = ds.metrics._smoothed_base_rates(ds.labels)
+        print(f"Dirichlet-smoothed base rates: {score}")
+        self.assertIsNotNone(score)
+
+        # Smoothed EDF
+        score = ds.metrics.smoothed_empirical_differential_fairness()
+        print(f"Smoothed EDF: {score}")
+        self.assertIsNotNone(score)
+
+        # Consistency
+        score = ds.metrics.consistency()
+        print(f"Consistency: {score}")
+        self.assertIsNotNone(score)
+
+        ### METRICS USING SCORES ###
 
         score = ds.scores_metrics.new_fancy_metric()
         self.assertIsNotNone(score)
@@ -139,38 +160,6 @@ class TestMulticlassLabelDataset(unittest.TestCase):
             print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
         self.assertIsInstance(ds, MulticlassLabelDataset)
         self.assertIsNotNone(ds)
-
-    def test_metrics_on_dataset(self):
-        ds = create_dataset("multi class",
-                            # parameters of aequitas.MulticlassLabelDataset init
-                            unprivileged_groups=[{'prot_attr': 0}],
-                            privileged_groups=[{'prot_attr': 1}],
-                            # parameters of aequitas.StructuredDataset init
-                            imputation_strategy=MCMCImputationStrategy(),
-                            # parameters of aif360.MulticlassLabelDataset init
-                            favorable_label=[0, 1., 2.],
-                            unfavorable_label=[3., 4.],
-                            # parameters of aif360.StructuredDataset init
-                            df=generate_multi_label_dataframe_with_scores(),
-                            label_names=['label'],
-                            protected_attribute_names=['prot_attr'],
-                            scores_names="score"
-                            )
-        mro = False
-        if mro:
-            print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
-
-        self.assertIsInstance(ds, MulticlassLabelDataset)
-        self.assertIsNotNone(ds)
-
-        score = ds.metrics.disparate_impact()
-        print(f"Disparate impact: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds.scores_metrics.new_fancy_metric()
-        self.assertIsNotNone(score)
-
-
 
 
 if __name__ == '__main__':
