@@ -3,6 +3,7 @@ import aequitas
 from .structured_dataset import StructuredDataset
 from .binary_label_dataset import BinaryLabelDataset
 from .multi_class_label_dataset import MulticlassLabelDataset
+from .adult_dataset import AdultDataset
 
 
 _DATASET_TYPES = {
@@ -10,6 +11,7 @@ _DATASET_TYPES = {
     "multi class": MulticlassLabelDataset,
     "binary": BinaryLabelDataset,
     "multiclass": MulticlassLabelDataset,
+    "adult": AdultDataset
 }
 
 
