@@ -13,20 +13,16 @@ class BinaryLabelDataset(StructuredDataset, datasets.BinaryLabelDataset):
         self.privileged_groups = privileged_groups
         super(BinaryLabelDataset, self).__init__(**kwargs)
 
-    @property
-    def metrics(self):
+    def metrics(self, **kwargs):
         # dataset = BinaryLabelDataset(unprivileged_groups=self.unprivileged_groups,
                                      # privileged_groups=self.privileged_groups,
                                      # **self.kwargs)
-        return BinaryLabelDatasetMetric(dataset=self,
-                                        unprivileged_groups=self.unprivileged_groups,
+        return BinaryLabelDatasetMetric(dataset=self, unprivileged_groups=self.unprivileged_groups,
                                         privileged_groups=self.privileged_groups)
 
-    @property
-    def scores_metrics(self):
+    def scores_metrics(self, **kwargs):
         # dataset = BinaryLabelDataset(unprivileged_groups=self.unprivileged_groups,
         # privileged_groups=self.privileged_groups,
         # **self.kwargs)
-        return BinaryLabelDatasetScoresMetric(dataset=self,
-                                              unprivileged_groups=self.unprivileged_groups,
+        return BinaryLabelDatasetScoresMetric(dataset=self, unprivileged_groups=self.unprivileged_groups,
                                               privileged_groups=self.privileged_groups)
