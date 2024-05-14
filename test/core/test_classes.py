@@ -1,5 +1,9 @@
 import unittest
-import pandas as pd
+import numpy as np
+
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.linear_model import LogisticRegression
+
 from test import (
     generate_binary_label_dataframe,
     generate_binary_label_dataframe_with_scores,
@@ -15,6 +19,10 @@ from aequitas.core.datasets import (
 
 from aequitas.core.imputation_strategies import MCMCImputationStrategy
 from aequitas.core.metrics import BinaryLabelDatasetScoresMetric
+
+from aequitas.core.algorithms import create_algorithm
+
+from aif360.datasets import AdultDataset
 
 
 class TestBinaryLabelDataset(unittest.TestCase):
@@ -160,6 +168,46 @@ class TestMulticlassLabelDataset(unittest.TestCase):
             print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
         self.assertIsInstance(ds, MulticlassLabelDataset)
         self.assertIsNotNone(ds)
+
+
+class TestMitigationAlgorithms(unittest.TestCase):
+
+    def test_disparate_impact_remover_on_adult_dataset(self):
+        protected = "sex"
+        ds = create_dataset("adult",
+                            # parameters of aif360.datasets.AdultDataset
+                            protected_attribute_names=[protected],
+                            privileged_classes=[['Male']], categorical_features=[],
+                            features_to_keep=['age', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
+                            )
+
+        scaler = MinMaxScaler(copy=False)
+
+        test, train = ds.split([16281])
+
+        train.features = scaler.fit_transform(train.features)
+        test.features = scaler.fit_transform(test.features)
+
+        index = train.feature_names.index(protected)
+
+        di_remover = create_algorithm(algorithm_type="dir", sensitive_attribute=protected)
+
+        print(f"disparate impact before mitigation: {test.metrics().disparate_impact()}")
+
+        train_repd = di_remover.fit_transform(train)
+        test_repd = di_remover.fit_transform(test)
+
+        X_tr = np.delete(train_repd.features, index, axis=1)
+        X_te = np.delete(test_repd.features, index, axis=1)
+        y_tr = train_repd.labels.ravel()
+
+        lmod = LogisticRegression(class_weight='balanced', solver='liblinear')
+        lmod.fit(X_tr, y_tr)
+
+        test_repd_pred = test_repd.copy()
+        test_repd_pred.labels = lmod.predict(X_te)
+
+        print(f"disparate impact after mitigation: {test_repd_pred.metrics().disparate_impact()}")
 
 
 if __name__ == '__main__':
