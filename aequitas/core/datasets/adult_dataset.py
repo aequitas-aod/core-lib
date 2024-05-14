@@ -9,6 +9,7 @@ class AdultDataset(datasets.AdultDataset):
         self.unprivileged_groups = [{attr_name: 0} for attr_name in self.protected_attribute_names]
         self.privileged_groups = [{attr_name: 1} for attr_name in self.protected_attribute_names]
 
+    @property
     def metrics(self):
         return BinaryLabelDatasetMetric(dataset=self, unprivileged_groups=self.unprivileged_groups,
                                         privileged_groups=self.privileged_groups)

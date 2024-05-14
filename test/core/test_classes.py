@@ -192,7 +192,7 @@ class TestMitigationAlgorithms(unittest.TestCase):
 
         di_remover = create_algorithm(algorithm_type="dir", sensitive_attribute=protected)
 
-        print(f"disparate impact before mitigation: {test.metrics().disparate_impact()}")
+        print(f"disparate impact before mitigation: {test.metrics.disparate_impact()}")
 
         train_repd = di_remover.fit_transform(train)
         test_repd = di_remover.fit_transform(test)
@@ -207,7 +207,7 @@ class TestMitigationAlgorithms(unittest.TestCase):
         test_repd_pred = test_repd.copy()
         test_repd_pred.labels = lmod.predict(X_te)
 
-        print(f"disparate impact after mitigation: {test_repd_pred.metrics().disparate_impact()}")
+        print(f"disparate impact after mitigation: {test_repd_pred.metrics.disparate_impact()}")
 
 
 if __name__ == '__main__':
