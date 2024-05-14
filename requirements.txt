@@ -1,5 +1,10 @@
 aif360==0.6.0
 pandas==2.2.1
+BlackBoxAuditing
 aif360[AdversarialDebiasing]
 aif360[Reductions]
 aif360[inFairness]
+
+scikit-learn~=1.4.2
+numpy~=1.26.4
+setuptools~=69.5.1
