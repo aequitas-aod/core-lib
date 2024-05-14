@@ -6,7 +6,7 @@ import pandas as pd
 def generate_binary_label_dataframe(rows: int = 1000) -> pd.DataFrame:
     features = random.uniform(0, 1, size=(rows, 1))
     prot_attr = np.random.randint(2, size=(rows, 1))
-    labels = random.uniform(0, 1, size=(rows, 1)).astype(int)
+    labels = np.random.randint(2, size=(rows, 1))
     data = np.concatenate([features] + [prot_attr] + [labels], axis=1)
     return pd.DataFrame(data, columns=['feat', 'prot_attr', 'label'])
 
