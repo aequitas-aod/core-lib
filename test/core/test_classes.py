@@ -6,9 +6,13 @@ from sklearn.linear_model import LogisticRegression
 
 from test import (
     generate_binary_label_dataframe,
+    generate_skewed_binary_label_dataframe,
     generate_binary_label_dataframe_with_scores,
+    generate_skewed_binary_label_dataframe_with_scores,
     generate_multi_label_dataframe,
-    generate_multi_label_dataframe_with_scores
+    generate_skewed_multi_label_dataframe,
+    generate_multi_label_dataframe_with_scores,
+    generate_skewed_multi_label_dataframe_with_scores
 )
 
 from aequitas.core.datasets import (
@@ -48,6 +52,23 @@ class TestBinaryLabelDataset(unittest.TestCase):
         self.assertIsInstance(ds, BinaryLabelDataset)
         self.assertIsNotNone(ds)
 
+        ds_skewed = create_dataset("binary label",
+                                   # parameters of aequitas.BinaryLabelDataset init
+                                   unprivileged_groups=[{'prot_attr': 0}],
+                                   privileged_groups=[{'prot_attr': 1}],
+                                   # parameters of aequitas.StructuredDataset init
+                                   imputation_strategy=MCMCImputationStrategy(),
+                                   # parameters of aif360.BinaryLabelDataset init
+                                   favorable_label=1,
+                                   unfavorable_label=0,
+                                   # parameters of aif360.StructuredDataset init
+                                   df=generate_skewed_binary_label_dataframe(),
+                                   label_names=['label'],
+                                   protected_attribute_names=['prot_attr']
+                                   )
+        self.assertIsInstance(ds_skewed, BinaryLabelDataset)
+        self.assertIsNotNone(ds_skewed)
+
     def test_dataset_creation_with_scores_via_factory(self):
         ds = create_dataset("binary label",
                             # parameters of aequitas.BinaryLabelDataset init
@@ -70,6 +91,24 @@ class TestBinaryLabelDataset(unittest.TestCase):
         self.assertIsInstance(ds, BinaryLabelDataset)
         self.assertIsNotNone(ds)
 
+        ds_skewed = create_dataset("binary label",
+                                   # parameters of aequitas.BinaryLabelDataset init
+                                   unprivileged_groups=[{'prot_attr': 0}],
+                                   privileged_groups=[{'prot_attr': 1}],
+                                   # parameters of aequitas.StructuredDataset init
+                                   imputation_strategy=MCMCImputationStrategy(),
+                                   # parameters of aif360.BinaryLabelDataset init
+                                   favorable_label=1,
+                                   unfavorable_label=0,
+                                   # parameters of aif360.StructuredDataset init
+                                   df=generate_skewed_binary_label_dataframe_with_scores(),
+                                   label_names=['label'],
+                                   protected_attribute_names=['prot_attr']
+                                   )
+
+        self.assertIsInstance(ds_skewed, BinaryLabelDataset)
+        self.assertIsNotNone(ds_skewed)
+
     def test_metrics_on_dataset(self):
         ds = create_dataset("binary label",
                             # parameters of aequitas.BinaryLabelDataset init
@@ -89,8 +128,28 @@ class TestBinaryLabelDataset(unittest.TestCase):
         mro = False
         if mro:
             print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
+
+        ds_skewed = create_dataset("binary label",
+                                   # parameters of aequitas.BinaryLabelDataset init
+                                   unprivileged_groups=[{'prot_attr': 0}],
+                                   privileged_groups=[{'prot_attr': 1}],
+                                   # parameters of aequitas.StructuredDataset init
+                                   imputation_strategy=MCMCImputationStrategy(),
+                                   # parameters of aif360.BinaryLabelDataset init
+                                   favorable_label=1,
+                                   unfavorable_label=0,
+                                   # parameters of aif360.StructuredDataset init
+                                   df=generate_skewed_binary_label_dataframe_with_scores(),
+                                   label_names=['label'],
+                                   protected_attribute_names=['prot_attr'],
+                                   scores_names="score"
+                                   )
+
         self.assertIsInstance(ds.scores_metrics, BinaryLabelDatasetScoresMetric)
         self.assertIsNotNone(ds)
+
+        self.assertIsInstance(ds_skewed.scores_metrics, BinaryLabelDatasetScoresMetric)
+        self.assertIsNotNone(ds_skewed)
 
         ### METRICS USING LABELS ###
 
@@ -99,9 +158,17 @@ class TestBinaryLabelDataset(unittest.TestCase):
         print(f"Disparate impact: {score}")
         self.assertIsNotNone(score)
 
+        score = ds_skewed.metrics.disparate_impact()
+        print(f"Disparate impact, skewed: {score}")
+        self.assertIsNotNone(score)
+
         # Statistical Parity
         score = ds.metrics.statistical_parity_difference()
         print(f"Statistical Parity: {score}")
+        self.assertIsNotNone(score)
+
+        score = ds_skewed.metrics.statistical_parity_difference()
+        print(f"Statistical Parity, skewed: {score}")
         self.assertIsNotNone(score)
 
         # Dirichlet-smoothed base rates
@@ -109,14 +176,26 @@ class TestBinaryLabelDataset(unittest.TestCase):
         print(f"Dirichlet-smoothed base rates: {score}")
         self.assertIsNotNone(score)
 
+        score = ds_skewed.metrics._smoothed_base_rates(ds.labels)
+        print(f"Dirichlet-smoothed base rates, skewed: {score}")
+        self.assertIsNotNone(score)
+
         # Smoothed EDF
         score = ds.metrics.smoothed_empirical_differential_fairness()
         print(f"Smoothed EDF: {score}")
         self.assertIsNotNone(score)
 
+        score = ds_skewed.metrics.smoothed_empirical_differential_fairness()
+        print(f"Smoothed EDF, skewed: {score}")
+        self.assertIsNotNone(score)
+
         # Consistency
         score = ds.metrics.consistency()
         print(f"Consistency: {score}")
+        self.assertIsNotNone(score)
+
+        score = ds_skewed.metrics.consistency()
+        print(f"Consistency, skewed: {score}")
         self.assertIsNotNone(score)
 
         ### METRICS USING SCORES ###
@@ -147,6 +226,68 @@ class TestMulticlassLabelDataset(unittest.TestCase):
         self.assertIsInstance(ds, MulticlassLabelDataset)
         self.assertIsNotNone(ds)
 
+        ds_skewed = create_dataset("multi class",
+                                   # parameters of aequitas.MulticlassLabelDataset init
+                                   unprivileged_groups=[{'prot_attr': 0}],
+                                   privileged_groups=[{'prot_attr': 1}],
+                                   # parameters of aequitas.StructuredDataset init
+                                   imputation_strategy=MCMCImputationStrategy(),
+                                   # parameters of aif360.MulticlassLabelDataset init
+                                   favorable_label=[0, 1., 2.],
+                                   unfavorable_label=[3., 4.],
+                                   # parameters of aif360.StructuredDataset init
+                                   df=generate_skewed_multi_label_dataframe(),
+                                   label_names=['label'],
+                                   protected_attribute_names=['prot_attr']
+                                   )
+        self.assertIsInstance(ds_skewed, MulticlassLabelDataset)
+        self.assertIsNotNone(ds_skewed)
+
+        # Disparate Impact
+        score = ds.metrics.disparate_impact()
+        print(f"Disparate impact: {score}")
+        self.assertIsNotNone(score)
+
+        score = ds_skewed.metrics.disparate_impact()
+        print(f"Disparate impact, skewed: {score}")
+        self.assertIsNotNone(score)
+
+        # Statistical Parity
+        score = ds.metrics.statistical_parity_difference()
+        print(f"Statistical Parity: {score}")
+        self.assertIsNotNone(score)
+
+        score = ds_skewed.metrics.statistical_parity_difference()
+        print(f"Statistical Parity, skewed: {score}")
+        self.assertIsNotNone(score)
+
+        # Dirichlet-smoothed base rates
+        score = ds.metrics._smoothed_base_rates(ds.labels)
+        print(f"Dirichlet-smoothed base rates: {score}")
+        self.assertIsNotNone(score)
+
+        score = ds_skewed.metrics._smoothed_base_rates(ds.labels)
+        print(f"Dirichlet-smoothed base rates, skewed: {score}")
+        self.assertIsNotNone(score)
+
+        # Smoothed EDF
+        score = ds.metrics.smoothed_empirical_differential_fairness()
+        print(f"Smoothed EDF: {score}")
+        self.assertIsNotNone(score)
+
+        score = ds_skewed.metrics.smoothed_empirical_differential_fairness()
+        print(f"Smoothed EDF, skewed: {score}")
+        self.assertIsNotNone(score)
+
+        # Consistency
+        score = ds.metrics.consistency()
+        print(f"Consistency: {score}")
+        self.assertIsNotNone(score)
+
+        score = ds_skewed.metrics.consistency()
+        print(f"Consistency, skewed: {score}")
+        self.assertIsNotNone(score)
+
     def test_dataset_creation_with_scores_via_factory(self):
         ds = create_dataset("multi class",
                             # parameters of aequitas.MulticlassLabelDataset init
@@ -168,6 +309,24 @@ class TestMulticlassLabelDataset(unittest.TestCase):
             print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
         self.assertIsInstance(ds, MulticlassLabelDataset)
         self.assertIsNotNone(ds)
+
+        ds_skewed = create_dataset("multi class",
+                                   # parameters of aequitas.MulticlassLabelDataset init
+                                   unprivileged_groups=[{'prot_attr': 0}],
+                                   privileged_groups=[{'prot_attr': 1}],
+                                   # parameters of aequitas.StructuredDataset init
+                                   imputation_strategy=MCMCImputationStrategy(),
+                                   # parameters of aif360.MulticlassLabelDataset init
+                                   favorable_label=[0, 1., 2.],
+                                   unfavorable_label=[3., 4.],
+                                   # parameters of aif360.StructuredDataset init
+                                   df=generate_skewed_multi_label_dataframe_with_scores(),
+                                   label_names=['label'],
+                                   protected_attribute_names=['prot_attr'],
+                                   scores_names="score"
+                                   )
+        self.assertIsInstance(ds_skewed, MulticlassLabelDataset)
+        self.assertIsNotNone(ds_skewed)
 
 
 class TestMitigationAlgorithms(unittest.TestCase):
@@ -217,12 +376,13 @@ class TestMitigationAlgorithms(unittest.TestCase):
                             privileged_classes=[['Male']], categorical_features=[],
                             features_to_keep=['age', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
                             )
-        print(f"Difference in mean outcomes between unprivileged and privileged groups before reweighing: {ds.metrics.mean_difference()}")
+        print(
+            f"Difference in mean outcomes between unprivileged and privileged groups before reweighing: {ds.metrics.mean_difference()}")
         rw = create_algorithm("reweighing", unprivileged_groups=ds.unprivileged_groups,
                               privileged_groups=ds.privileged_groups)
         repaired_ds = rw.fit_transform(ds)
-        print(f"Difference in mean outcomes between unprivileged and privileged groups after reweighing: {repaired_ds.metrics.mean_difference()}")
-
+        print(
+            f"Difference in mean outcomes between unprivileged and privileged groups after reweighing: {repaired_ds.metrics.mean_difference()}")
 
 
 if __name__ == '__main__':
