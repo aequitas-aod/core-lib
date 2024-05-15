@@ -209,6 +209,21 @@ class TestMitigationAlgorithms(unittest.TestCase):
 
         print(f"disparate impact after mitigation: {test_repd_pred.metrics.disparate_impact()}")
 
+    def test_reweighing_on_adult_dataset(self):
+        protected = "sex"
+        ds = create_dataset("adult",
+                            # parameters of aif360.datasets.AdultDataset
+                            protected_attribute_names=[protected],
+                            privileged_classes=[['Male']], categorical_features=[],
+                            features_to_keep=['age', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
+                            )
+        print(f"Difference in mean outcomes between unprivileged and privileged groups before reweighing: {ds.metrics.mean_difference()}")
+        rw = create_algorithm("reweighing", unprivileged_groups=ds.unprivileged_groups,
+                              privileged_groups=ds.privileged_groups)
+        repaired_ds = rw.fit_transform(ds)
+        print(f"Difference in mean outcomes between unprivileged and privileged groups after reweighing: {repaired_ds.metrics.mean_difference()}")
+
+
 
 if __name__ == '__main__':
     unittest.main()
