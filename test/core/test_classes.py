@@ -25,9 +25,9 @@ from aequitas.core.imputation_strategies import MCMCImputationStrategy
 from aequitas.core.metrics import BinaryLabelDatasetScoresMetric
 
 from aequitas.core.algorithms import create_algorithm
+from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
 
-from aif360.datasets import AdultDataset
-
+from aequitas.core.algorithms.preprocessing.optim_preproc_helpers import load_preproc_data_adult_aeq
 
 class TestBinaryLabelDataset(unittest.TestCase):
 
@@ -334,11 +334,12 @@ class TestMitigationAlgorithms(unittest.TestCase):
     def test_disparate_impact_remover_on_adult_dataset(self):
         protected = "sex"
         ds = create_dataset("adult",
-                            # parameters of aif360.datasets.AdultDataset
+                            unprivileged_groups=[{protected: 0}],
+                            privileged_groups=[{protected: 1}],
                             protected_attribute_names=[protected],
-                            privileged_classes=[['Male']], categorical_features=[],
-                            features_to_keep=['age', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
-                            )
+                            privileged_classes=[['Male']],
+                            categorical_features=[],
+                            features_to_keep=['age', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week'])
 
         scaler = MinMaxScaler(copy=False)
 
@@ -370,12 +371,9 @@ class TestMitigationAlgorithms(unittest.TestCase):
 
     def test_reweighing_on_adult_dataset(self):
         protected = "sex"
-        ds = create_dataset("adult",
-                            # parameters of aif360.datasets.AdultDataset
-                            protected_attribute_names=[protected],
-                            privileged_classes=[['Male']], categorical_features=[],
-                            features_to_keep=['age', 'education-num', 'capital-gain', 'capital-loss', 'hours-per-week']
-                            )
+        ds = load_preproc_data_adult_aeq(unprivileged_groups=[{protected: 0}],
+                                         privileged_groups=[{protected: 1}],
+                                         protected_attributes=[protected])
         print(
             f"Difference in mean outcomes between unprivileged and privileged groups before reweighing: {ds.metrics.mean_difference()}")
         rw = create_algorithm("reweighing", unprivileged_groups=ds.unprivileged_groups,
@@ -383,6 +381,10 @@ class TestMitigationAlgorithms(unittest.TestCase):
         repaired_ds = rw.fit_transform(ds)
         print(
             f"Difference in mean outcomes between unprivileged and privileged groups after reweighing: {repaired_ds.metrics.mean_difference()}")
+
+    def test_adversarial_debiasing_on_adult_dataset(self):
+        ds = load_preproc_data_adult()
+
 
 
 if __name__ == '__main__':
