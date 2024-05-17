@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+import math
 
 from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
 from sklearn.linear_model import LogisticRegression
@@ -31,10 +32,77 @@ from aequitas.core.algorithms.preprocessing.optim_preproc_helpers import load_pr
 from aequitas.core.datasets.zoo import adult
 
 import tensorflow.compat.v1 as tf
+
 tf.disable_eager_execution()
 
 
-class TestBinaryLabelDataset(unittest.TestCase):
+class AbstractMetricTestCase(unittest.TestCase):
+    def assertInRange(self, value, lower, upper):
+        self.assertGreaterEqual(value, lower)
+        self.assertLessEqual(value, upper)
+
+    def assertEDF(self, dataset, dataset_skewed, epsilon=2.337):
+        score = dataset.metrics.smoothed_empirical_differential_fairness()
+        self.assertFalse(math.isnan(score), msg="EDF should not be nan")
+        self.assertIsNotNone(score, msg="EDF should not be None")
+        self.assertInRange(score, lower=np.exp(-epsilon), upper=np.exp(epsilon))
+
+        score = dataset_skewed.metrics.smoothed_empirical_differential_fairness()
+        self.assertFalse(math.isnan(score), msg="EDF should not be nan")
+        self.assertIsNotNone(score, msg="EDF should not be None")
+        self.assertFalse(score < np.exp(-epsilon) or score > np.exp(epsilon))
+
+    def assertSP(self, dataset, dataset_skewed, bound=0.1):
+        score = dataset_skewed.metrics.statistical_parity_difference()
+        self.assertFalse(math.isnan(score), msg="SP should not be nan")
+        self.assertIsNotNone(score, msg="SP should not be None")
+        self.assertTrue(score > bound or score < -bound, msg="score should not be close to 0 for a biased dataset")
+
+        score = dataset.metrics.statistical_parity_difference()
+        self.assertFalse(math.isnan(score), msg="SP should not be nan")
+        self.assertIsNotNone(score, msg="SP should not be None")
+        self.assertInRange(score, -bound, bound)
+
+    def assertDI(self, dataset, dataset_skewed, bound=0.8):
+        score = dataset.metrics.disparate_impact()
+        self.assertFalse(math.isnan(score), msg="DI should not be nan")
+        self.assertIsNotNone(score, msg="DI should not be None")
+        self.assertGreaterEqual(score, bound, f"DI should be >= {bound} for a nonbiased dataset")
+
+        score = dataset_skewed.metrics.disparate_impact()
+        self.assertFalse(math.isnan(score), msg="DI should not be nan")
+        self.assertIsNotNone(score, msg="DI should not be None")
+        self.assertLess(score, bound, msg=f"DI is expected to be below {bound} for biased dataset")
+
+    def assertConsistency(self, dataset, dataset_skewed, bound=0.8):
+        score = dataset.metrics.disparate_impact()
+        self.assertFalse(math.isnan(score), msg="Consistency should not be nan")
+        self.assertIsNotNone(score, msg="Consistency should not be None")
+        self.assertGreaterEqual(score, bound, f"Consistency should be >= {bound} for a nonbiased dataset")
+
+        score = dataset_skewed.metrics.disparate_impact()
+        self.assertFalse(math.isnan(score), msg="Consistency should not be nan")
+        self.assertIsNotNone(score, msg="Consistency should not be None")
+        self.assertLess(score, bound, msg=f"Consistency is expected to be < {bound} for biased dataset")
+
+    def assertMeanDifference(self, dataset, dataset_skewed, bound=0.1):
+        score = dataset.metrics.mean_difference()
+        self.assertFalse(math.isnan(score),
+                         msg="Difference in mean outcomes between unprivileged and privileged groups should not be nan")
+        self.assertIsNotNone(score,
+                             msg="Difference in mean outcomes between unprivileged and privileged groups should not be None")
+        self.assertInRange(score, lower=-bound, upper=bound)
+
+        score = dataset_skewed.metrics.mean_difference()
+        self.assertFalse(math.isnan(score),
+                         msg="Difference in mean outcomes between unprivileged and privileged groups should not be nan")
+        self.assertIsNotNone(score,
+                             msg="Difference in mean outcomes between unprivileged and privileged groups should not be None")
+        self.assertLess(score, bound,
+                                f"Difference in mean outcomes between unprivileged and privileged should be < {-bound} in biased dataset")
+
+
+class TestBinaryLabelDataset(AbstractMetricTestCase):
 
     def test_dataset_creation_via_factory(self):
         ds = create_dataset("binary label",
@@ -51,9 +119,7 @@ class TestBinaryLabelDataset(unittest.TestCase):
                             label_names=['label'],
                             protected_attribute_names=['prot_attr']
                             )
-        mro = False
-        if mro:
-            print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
+
         self.assertIsInstance(ds, BinaryLabelDataset)
         self.assertIsNotNone(ds)
 
@@ -90,9 +156,7 @@ class TestBinaryLabelDataset(unittest.TestCase):
                             protected_attribute_names=['prot_attr'],
                             scores_names="score"
                             )
-        mro = False
-        if mro:
-            print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
+
         self.assertIsInstance(ds, BinaryLabelDataset)
         self.assertIsNotNone(ds)
 
@@ -130,9 +194,6 @@ class TestBinaryLabelDataset(unittest.TestCase):
                             protected_attribute_names=['prot_attr'],
                             scores_names="score"
                             )
-        mro = False
-        if mro:
-            print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
 
         ds_skewed = create_dataset("binary label",
                                    # parameters of aequitas.BinaryLabelDataset init
@@ -159,49 +220,10 @@ class TestBinaryLabelDataset(unittest.TestCase):
         ### METRICS USING LABELS ###
 
         # Disparate Impact
-        score = ds.metrics.disparate_impact()
-        print(f"Disparate impact: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics.disparate_impact()
-        print(f"Disparate impact, skewed: {score}")
-        self.assertIsNotNone(score)
-
-        # Statistical Parity
-        score = ds.metrics.statistical_parity_difference()
-        print(f"Statistical Parity: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics.statistical_parity_difference()
-        print(f"Statistical Parity, skewed: {score}")
-        self.assertIsNotNone(score)
-
-        # Dirichlet-smoothed base rates
-        score = ds.metrics._smoothed_base_rates(ds.labels)
-        print(f"Dirichlet-smoothed base rates: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics._smoothed_base_rates(ds.labels)
-        print(f"Dirichlet-smoothed base rates, skewed: {score}")
-        self.assertIsNotNone(score)
-
-        # Smoothed EDF
-        score = ds.metrics.smoothed_empirical_differential_fairness()
-        print(f"Smoothed EDF: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics.smoothed_empirical_differential_fairness()
-        print(f"Smoothed EDF, skewed: {score}")
-        self.assertIsNotNone(score)
-
-        # Consistency
-        score = ds.metrics.consistency()
-        print(f"Consistency: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics.consistency()
-        print(f"Consistency, skewed: {score}")
-        self.assertIsNotNone(score)
+        self.assertDI(dataset=ds, dataset_skewed=ds_skewed)
+        self.assertSP(dataset=ds, dataset_skewed=ds_skewed)
+        self.assertEDF(dataset=ds, dataset_skewed=ds_skewed)
+        self.assertConsistency(dataset=ds, dataset_skewed=ds_skewed)
 
         ### METRICS USING SCORES ###
 
@@ -209,7 +231,7 @@ class TestBinaryLabelDataset(unittest.TestCase):
         self.assertIsNotNone(score)
 
 
-class TestMulticlassLabelDataset(unittest.TestCase):
+class TestMulticlassLabelDataset(AbstractMetricTestCase):
     def test_dataset_creation_via_factory(self):
         ds = create_dataset("multi class",
                             # parameters of aequitas.MulticlassLabelDataset init
@@ -225,9 +247,7 @@ class TestMulticlassLabelDataset(unittest.TestCase):
                             label_names=['label'],
                             protected_attribute_names=['prot_attr']
                             )
-        mro = False
-        if mro:
-            print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
+
         self.assertIsInstance(ds, MulticlassLabelDataset)
         self.assertIsNotNone(ds)
 
@@ -247,51 +267,9 @@ class TestMulticlassLabelDataset(unittest.TestCase):
                                    )
         self.assertIsInstance(ds_skewed, MulticlassLabelDataset)
         self.assertIsNotNone(ds_skewed)
-
-        # Disparate Impact
-        score = ds.metrics.disparate_impact()
-        print(f"Disparate impact: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics.disparate_impact()
-        print(f"Disparate impact, skewed: {score}")
-        self.assertIsNotNone(score)
-
-        # Statistical Parity
-        score = ds.metrics.statistical_parity_difference()
-        print(f"Statistical Parity: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics.statistical_parity_difference()
-        print(f"Statistical Parity, skewed: {score}")
-        self.assertIsNotNone(score)
-
-        # Dirichlet-smoothed base rates
-        score = ds.metrics._smoothed_base_rates(ds.labels)
-        print(f"Dirichlet-smoothed base rates: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics._smoothed_base_rates(ds.labels)
-        print(f"Dirichlet-smoothed base rates, skewed: {score}")
-        self.assertIsNotNone(score)
-
-        # Smoothed EDF
-        score = ds.metrics.smoothed_empirical_differential_fairness()
-        print(f"Smoothed EDF: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics.smoothed_empirical_differential_fairness()
-        print(f"Smoothed EDF, skewed: {score}")
-        self.assertIsNotNone(score)
-
-        # Consistency
-        score = ds.metrics.consistency()
-        print(f"Consistency: {score}")
-        self.assertIsNotNone(score)
-
-        score = ds_skewed.metrics.consistency()
-        print(f"Consistency, skewed: {score}")
-        self.assertIsNotNone(score)
+        self.assertDI(dataset=ds, dataset_skewed=ds_skewed)
+        self.assertSP(dataset=ds, dataset_skewed=ds_skewed)
+        self.assertConsistency(dataset=ds, dataset_skewed=ds_skewed)
 
     def test_dataset_creation_with_scores_via_factory(self):
         ds = create_dataset("multi class",
@@ -309,9 +287,7 @@ class TestMulticlassLabelDataset(unittest.TestCase):
                             protected_attribute_names=['prot_attr'],
                             scores_names="score"
                             )
-        mro = False
-        if mro:
-            print(f"{ds.__class__.__mro__} MRO (aequitas): {ds.__class__.__mro__}")
+
         self.assertIsInstance(ds, MulticlassLabelDataset)
         self.assertIsNotNone(ds)
 
@@ -334,13 +310,12 @@ class TestMulticlassLabelDataset(unittest.TestCase):
         self.assertIsNotNone(ds_skewed)
 
 
-class TestMitigationAlgorithms(unittest.TestCase):
+class TestMitigationAlgorithms(AbstractMetricTestCase):
 
     def test_disparate_impact_remover_on_adult_dataset(self):
         protected = "sex"
 
-        ds = adult("adult",
-                   unprivileged_groups=[{protected: 0}],
+        ds = adult(unprivileged_groups=[{protected: 0}],
                    privileged_groups=[{protected: 1}],
                    protected_attribute_names=[protected],
                    privileged_classes=[['Male']],
@@ -358,9 +333,6 @@ class TestMitigationAlgorithms(unittest.TestCase):
 
         di_remover = create_algorithm(algorithm_type="dir", sensitive_attribute=protected)
 
-        di_before = test.metrics.disparate_impact()
-        self.assertLess(di_before, 0.8, msg="DI is expected to be below 0.8 before mitigation")
-
         train_repd = di_remover.fit_transform(train)
         test_repd = di_remover.fit_transform(test)
 
@@ -374,21 +346,17 @@ class TestMitigationAlgorithms(unittest.TestCase):
         test_repd_pred = test_repd.copy()
         test_repd_pred.labels = lmod.predict(X_te)
 
-        di_after = test_repd_pred.metrics.disparate_impact()
-        self.assertGreaterEqual(di_after, 0.8, msg="DI is expected to be above 0.8 after mitigation")
+        self.assertDI(dataset=test_repd_pred, dataset_skewed=test)
 
     def test_reweighing_on_adult_dataset(self):
         protected = "sex"
         ds = load_preproc_data_adult_aeq(unprivileged_groups=[{protected: 0}],
                                          privileged_groups=[{protected: 1}],
                                          protected_attributes=[protected])
-        print(
-            f"Difference in mean outcomes between unprivileged and privileged groups before reweighing: {ds.metrics.mean_difference()}")
         rw = create_algorithm("reweighing", unprivileged_groups=ds.unprivileged_groups,
                               privileged_groups=ds.privileged_groups)
         repaired_ds = rw.fit_transform(ds)
-        print(
-            f"Difference in mean outcomes between unprivileged and privileged groups after reweighing: {repaired_ds.metrics.mean_difference()}")
+        self.assertMeanDifference(dataset=repaired_ds, dataset_skewed=ds)
 
     def test_adversarial_debiasing_on_adult_dataset(self):
         attr = "sex"
@@ -398,13 +366,6 @@ class TestMitigationAlgorithms(unittest.TestCase):
                                          privileged_groups=p)
 
         train, test = ds.split([0.7], shuffle=True)
-        metric_orig_train = train.metrics.mean_difference()
-        metric_orig_test = test.metrics.mean_difference()
-
-        print("Metrics from original data")
-        print(f"Train set: Difference in mean outcomes between unprivileged and privileged groups: {metric_orig_train}")
-        print(f"Train set: Difference in mean outcomes between unprivileged and privileged groups: {metric_orig_test}")
-        print("#" * 10 + "\n")
 
         min_max_scaler = MaxAbsScaler()
         train.features = min_max_scaler.fit_transform(train.features)
@@ -423,15 +384,6 @@ class TestMitigationAlgorithms(unittest.TestCase):
         nondebiasing_train = plain_model.predict(train)
         nondebiasing_test = plain_model.predict(test)
 
-        metric_nondebiasing_train = nondebiasing_train.metrics.mean_difference()
-        metric_nondebiasing_test = nondebiasing_test.metrics.mean_difference()
-
-        print("Metrics from plain model")
-        print(f"Train set: Difference in mean outcomes between unprivileged and privileged groups: {metric_nondebiasing_train}")
-        print(f"Train set: Difference in mean outcomes between unprivileged and privileged groups: {metric_nondebiasing_test}")
-        print("#" * 10 + "\n")
-
-
         sess.close()
         tf.reset_default_graph()
         sess = tf.Session()
@@ -447,14 +399,11 @@ class TestMitigationAlgorithms(unittest.TestCase):
         debiasing_train = debiased_model.predict(train)
         debiasing_test = debiased_model.predict(test)
 
-        metric_debiasing_train = debiasing_train.metrics.mean_difference()
-        metric_debiasing_test = debiasing_test.metrics.mean_difference()
-
-        print("Metrics from debiased model")
-        print("Train set: Difference in mean outcomes between unprivileged and privileged groups = %f" % metric_debiasing_train)
-        print("Train set: Difference in mean outcomes between unprivileged and privileged groups = %f" % metric_debiasing_test)
-        print("#" * 10 + "\n")
+        self.assertMeanDifference(dataset=debiasing_train, dataset_skewed=nondebiasing_train)
+        self.assertMeanDifference(dataset=debiasing_test, dataset_skewed=nondebiasing_test)
 
 
 if __name__ == '__main__':
     unittest.main()
+
+# TODO: test ClassificationMetric, test RegressionMetric
