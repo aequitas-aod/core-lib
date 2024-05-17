@@ -1,7 +1,6 @@
 from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
-from aequitas.core.datasets import AdultDataset
 import pandas as pd
-
+from aequitas.core.datasets.zoo import adult
 
 def load_preproc_data_adult_aeq(unprivileged_groups, privileged_groups, protected_attributes=None, sub_samp=False, balance=False):
     '''
@@ -90,7 +89,7 @@ def load_preproc_data_adult_aeq(unprivileged_groups, privileged_groups, protecte
     all_protected_attribute_maps = {"sex": {1.0: 'Male', 0.0: 'Female'},
                                     "race": {1.0: 'White', 0.0: 'Non-white'}}
 
-    return AdultDataset(
+    return adult(
         unprivileged_groups=unprivileged_groups,
         privileged_groups=privileged_groups,
         label_name=Y_features[0],
