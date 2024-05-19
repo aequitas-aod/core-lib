@@ -16,13 +16,9 @@ from test import (
     generate_skewed_multi_label_dataframe_with_scores
 )
 
-from aequitas.core.datasets import (
-    create_dataset,
-    BinaryLabelDataset,
-    MulticlassLabelDataset
-)
+from aequitas.core.datasets import create_dataset
 
-from aequitas.core.imputation_strategies import MCMCImputationStrategy
+from aequitas.core.imputation import MCMCImputationStrategy
 from aequitas.core.metrics import BinaryLabelDatasetScoresMetric
 
 from aequitas.core.algorithms import create_algorithm
