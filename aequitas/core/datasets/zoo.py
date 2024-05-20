@@ -7,14 +7,21 @@ import aif360
 DATA_DIR = Path(aif360.__file__).parent / "data" / "raw"
 
 
-def _download_if_missing(dirname: str, filename: str, baseurl: str):
+def _download_if_missing(dirname: str, filename: str, baseurl: str, max_attempts: int = 3):
     dir = DATA_DIR / dirname
     if not dir.exists():
         dir.mkdir()
     file = dir / filename
     if not file.exists():
         url = f"{baseurl}/{filename}"
-        urllib.request.urlretrieve(url, file)
+        while max_attempts > 0:
+            try:
+                urllib.request.urlretrieve(url, file)
+                return
+            except Exception as e:
+                max_attempts -= 1
+                if max_attempts == 0:
+                    raise e
 
 
 def adult(unprivileged_groups=None, privileged_groups=None, **kwargs) -> DatasetWithBinaryLabelMetrics:
