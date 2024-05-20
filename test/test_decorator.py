@@ -1,4 +1,3 @@
-from typing import Any
 import unittest
 from aequitas import Decorator
 
@@ -130,3 +129,22 @@ class TestDecoratedList(unittest.TestCase):
     def test_not_shiftable(self):
         with self.assertRaises(TypeError):
             self._x << 1
+
+
+class TestSubtypingWithOrdinaryClasses(unittest.TestCase):
+    class A():
+        pass
+
+    class DecoratedA(Decorator):
+        def __init__(self, value) -> None:
+            super().__init__(value)
+
+    def setUp(self):
+        self._x = self.DecoratedA(self.A())
+
+    def test_not_instance_of_decorated_type(self):
+        self.assertNotIsInstance(self._x, self.A)
+
+    def test_instance_of_decorator_type(self):
+        self.assertIsInstance(self._x, self.DecoratedA)
+        self.assertIsInstance(self._x, Decorator)

@@ -25,8 +25,32 @@ def isinstance(obj, cls):
 
 
 class Decorator:
+    # @classmethod
+    # def _make_decorator_instance_of_delegate_type(cls, decorated):
+    #     delegate = decorated._delegate
+    #     delegate_type = type(delegate)
+    #     old_is_instance_check = delegate_type.__instancecheck__
+    #     if hasattr(old_is_instance_check, '__decorated') and getattr(old_is_instance_check, '__decorated'):
+    #         return
+    #     def new_instance_check(instance, klass):
+    #         if old_is_instance_check(instance, klass):
+    #             return True
+    #         if isinstance(instance, cls):
+    #             return old_is_instance_check(instance._delegate, klass)
+    #         return False
+    #
+    #     setattr(new_instance_check, '__decorated', True)
+    #     try:
+    #         delegate_type.__instancecheck__ = new_instance_check
+    #     except TypeError:
+    #         import warnings
+    #         warnings.warn(f"Cannot set __instancecheck__ on built-in type {delegate_type.__name__}")
+
     def __init__(self, delegate) -> None:
+        if delegate is None:
+            raise ValueError("Delegate cannot be None in decorator pattern")
         self._delegate = delegate
+        # self._make_decorator_instance_of_delegate_type(self)
 
     def __getattr__(self, name):
         return getattr(self._delegate, name)
@@ -129,6 +153,8 @@ class Decorator:
     def __str__(self) -> str:
         return str(self._delegate)
 
+    def __instancecheck__(self, instance):
+        return super().__instancecheck__(instance)
 
 # keep this line at the bottom of this file
 logger.debug("Module %s correctly loaded", __name__)

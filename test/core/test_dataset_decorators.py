@@ -1,7 +1,6 @@
-from aequitas.core.datasets import DatasetWithBinaryLabelMetrics
+from aequitas.core.datasets import DatasetWithBinaryLabelMetrics, BinaryLabelDataset
 from aequitas.core.datasets.zoo import adult
-from aif360.datasets import BinaryLabelDataset
-from aif360.metrics import BinaryLabelDatasetMetric
+from aequitas.core.metrics import BinaryLabelDatasetMetric
 import unittest
 
 
