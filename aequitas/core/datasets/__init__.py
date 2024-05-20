@@ -46,6 +46,7 @@ class DatasetWithMetrics(aequitas.Decorator):
     def copy(self, *args, **kwargs):
         return self.wrap_another_dataset(self._delegate.copy(*args, **kwargs))
 
+
 class DatasetWithBinaryLabelMetrics(DatasetWithMetrics):
     def __init__(self, dataset, unprivileged_groups, privileged_groups):
         super().__init__(dataset, _metrics.BinaryLabelDatasetMetric)
