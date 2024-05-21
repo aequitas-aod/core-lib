@@ -32,20 +32,23 @@ jobs:
       group: ${{ github.workflow }}-run-unit-tests-${{ matrix.python-version }}-${{ matrix.os }}-${{ github.event.number || github.ref }}
       cancel-in-progress: true
     steps:
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        id: setup-python
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - run: echo 'Using cache for Python depedencies? ${{ steps.setup-python.outputs.cache-hit }}'
+
       - name: Restore Python dependencies
-        run: |
-          pip install -r requirements-dev.txt
+        run: pip install -r requirements-dev.txt
 
       - name: Test
-        run: python -m unittest discover -s test -t .
+        run: python -m unittest discover -v -s test -t .
   deploy:
     needs:
       - test
