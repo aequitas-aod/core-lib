@@ -84,8 +84,9 @@ def create_dataset(dataset_type,
     else:
         if dataset_type not in _DATASET_TYPES:
             raise ValueError(f"Unknown dataset type: {dataset_type}")
+        imputed_df = imputation_strategy(kwargs['df'])
+        kwargs['df'] = imputed_df
         dataset = _DATASET_TYPES[dataset_type](**kwargs)
-    dataset = imputation_strategy(dataset)
     return DatasetWithBinaryLabelMetrics(dataset, unprivileged_groups, privileged_groups)
 
 
