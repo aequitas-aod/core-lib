@@ -28,10 +28,10 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
-            imputation_strategy=MCMCImputationStrategy(),
+            imputation_strategy=MeanImputationStrategy(),
             # parameters of aif360.BinaryLabelDataset init
-            favorable_label=1,
-            unfavorable_label=0,
+            favorable_label=1.,
+            unfavorable_label=0.,
             # parameters of aif360.StructuredDataset init
             df=generate_binary_label_dataframe(),
             label_names=['label'],
@@ -45,7 +45,7 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
-            imputation_strategy=MCMCImputationStrategy(),
+            imputation_strategy=MeanImputationStrategy(),
             # parameters of aif360.BinaryLabelDataset init
             favorable_label=1,
             unfavorable_label=0,
@@ -63,7 +63,7 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
-            imputation_strategy=MCMCImputationStrategy(),
+            imputation_strategy=MeanImputationStrategy(),
             # parameters of aif360.BinaryLabelDataset init
             favorable_label=1,
             unfavorable_label=0,
@@ -81,7 +81,7 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
            unprivileged_groups=[{'prot_attr': 0}],
            privileged_groups=[{'prot_attr': 1}],
            # parameters of aequitas.StructuredDataset init
-           imputation_strategy=MCMCImputationStrategy(),
+           imputation_strategy=MeanImputationStrategy(),
            # parameters of aif360.BinaryLabelDataset init
            favorable_label=1,
            unfavorable_label=0,
@@ -99,7 +99,7 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
-            imputation_strategy=MCMCImputationStrategy(),
+            imputation_strategy=MeanImputationStrategy(),
             # parameters of aif360.BinaryLabelDataset init
             favorable_label=1,
             unfavorable_label=0,
@@ -117,7 +117,7 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
-            imputation_strategy=MCMCImputationStrategy(),
+            imputation_strategy=MeanImputationStrategy(),
             # parameters of aif360.BinaryLabelDataset init
             favorable_label=1,
             unfavorable_label=0,
