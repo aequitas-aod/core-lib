@@ -77,20 +77,24 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
 
         ds_skewed = create_dataset(
             "binary label",
-           # parameters of aequitas.BinaryLabelDataset init
-           unprivileged_groups=[{'prot_attr': 0}],
-           privileged_groups=[{'prot_attr': 1}],
-           # parameters of aequitas.StructuredDataset init
-           imputation_strategy=MeanImputationStrategy(),
-           # parameters of aif360.BinaryLabelDataset init
-           favorable_label=1,
-           unfavorable_label=0,
-           # parameters of aif360.StructuredDataset init
-           df=generate_skewed_binary_label_dataframe_with_scores(),
-           label_names=['label'],
-           protected_attribute_names=['prot_attr']
+            # parameters of aequitas.BinaryLabelDataset init
+            unprivileged_groups=[{'prot_attr': 0}],
+            privileged_groups=[{'prot_attr': 1}],
+            # parameters of aequitas.StructuredDataset init
+            imputation_strategy=MeanImputationStrategy(),
+            # parameters of aif360.BinaryLabelDataset init
+            favorable_label=1,
+            unfavorable_label=0,
+            # parameters of aif360.StructuredDataset init
+            df=generate_skewed_binary_label_dataframe_with_scores(),
+            label_names=['label'],
+            protected_attribute_names=['prot_attr']
         )
         self.assertBinaryLabelDataset(ds_skewed)
+
+    def test_dataframe_creation_with_nans(self):
+        df = generate_binary_label_dataframe(nans=True)
+        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * 0.1), msg="nan counts do not correspond")
 
     def test_metrics_on_dataset(self):
         ds = create_dataset(
