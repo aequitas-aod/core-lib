@@ -92,10 +92,6 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
         )
         self.assertBinaryLabelDataset(ds_skewed)
 
-    def test_dataframe_creation_with_nans(self):
-        df = generate_binary_label_dataframe(nans=True)
-        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * 0.1), msg="nan counts do not correspond")
-
     def test_metrics_on_dataset(self):
         ds = create_dataset(
             "binary label",
@@ -218,6 +214,52 @@ class TestMulticlassLabelDataset(AbstractMetricTestCase):
             scores_names="score"
         )
         self.assertMultiLabelDataset(ds_skewed)
+
+
+class TestDataframeCreationFunctions(AbstractMetricTestCase):
+
+    def setUp(self):
+        self.nan_perc = 0.1
+
+    def test_binary_dataframe_creation_with_nans(self):
+        df = generate_binary_label_dataframe(nans=True)
+        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * self.nan_perc),
+                         msg="nan counts do not correspond")
+
+    def test_skewed_binary_dataframe_creation_with_nans(self):
+        df = generate_skewed_binary_label_dataframe(nans=True)
+        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * self.nan_perc),
+                         msg="nan counts do not correspond")
+
+    def test_binary_dataframe_creation_with_nans_and_scores(self):
+        df = generate_binary_label_dataframe_with_scores(nans=True)
+        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * self.nan_perc),
+                         msg="nan counts do not correspond")
+
+    def test_skewed_binary_dataframe_creation_with_nans_and_scores(self):
+        df = generate_skewed_binary_label_dataframe_with_scores(nans=True)
+        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * self.nan_perc),
+                         msg="nan counts do not correspond")
+
+    def test_multi_label_dataframe_creation_with_nans(self):
+        df = generate_multi_label_dataframe(nans=True)
+        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * self.nan_perc),
+                         msg="nan counts do not correspond")
+
+    def test_skewed_multi_label_dataframe_creation_with_nans(self):
+        df = generate_skewed_multi_label_dataframe(nans=True)
+        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * self.nan_perc),
+                         msg="nan counts do not correspond")
+
+    def test_multi_label_dataframe_creation_with_nans_and_scores(self):
+        df = generate_multi_label_dataframe(nans=True)
+        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * self.nan_perc),
+                         msg="nan counts do not correspond")
+
+    def test_skewed_multi_label_dataframe_creation_with_nans_and_scores(self):
+        df = generate_skewed_multi_label_dataframe(nans=True)
+        self.assertEqual(df.isna().sum().sum(), int(df.shape[0] * (df.shape[1] - 1) * self.nan_perc),
+                         msg="nan counts do not correspond")
 
 
 if __name__ == '__main__':
