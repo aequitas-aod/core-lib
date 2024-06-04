@@ -106,3 +106,8 @@ class AbstractMetricTestCase(unittest.TestCase):
         self.assertIsInstance(dataset, DatasetWithMetrics)
         self.assertIsInstance(dataset._delegate, MulticlassLabelDataset)
         self.assertIsInstance(dataset.metrics, BinaryLabelDatasetMetric)
+
+    def assertRegressionDataset(self, dataset):
+        self.assertIsInstance(dataset, DatasetWithMetrics)
+        self.assertIsInstance(dataset._delegate, RegressionDataset)
+        self.assertIsInstance(dataset.metrics, RegressionDatasetMetric)

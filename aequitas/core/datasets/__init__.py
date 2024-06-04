@@ -52,9 +52,27 @@ class DatasetWithBinaryLabelMetrics(DatasetWithMetrics):
         super().__init__(dataset, _metrics.BinaryLabelDatasetMetric)
         self.unprivileged_groups = unprivileged_groups
         self.privileged_groups = privileged_groups
-        
+
     def _new_metrics(self) -> _metrics.Metric:
         return self._metrics_type(
+            dataset=self._delegate,
+            unprivileged_groups=self.unprivileged_groups,
+            privileged_groups=self.privileged_groups
+        )
+
+    def _attributes_to_propagate_when_wrapping(self):
+        return ['unprivileged_groups', 'privileged_groups']
+
+
+class DatasetWithRegressionMetrics(DatasetWithMetrics):
+    def __init__(self, dataset, unprivileged_groups, privileged_groups):
+        super().__init__(dataset, _metrics.RegressionDatasetMetric)
+        self.unprivileged_groups = unprivileged_groups
+        self.privileged_groups = privileged_groups
+
+    def _new_metrics(self) -> _metrics.Metric:
+        print("Calling _new_metrics method in class DatasetWithRegressionMetrics")
+        return self.metrics_type(
             dataset=self._delegate,
             unprivileged_groups=self.unprivileged_groups,
             privileged_groups=self.privileged_groups
@@ -70,13 +88,14 @@ _DATASET_TYPES = {
     "binary": BinaryLabelDataset,
     "multiclass": MulticlassLabelDataset,
     "multi": MulticlassLabelDataset,
+    "regression": RegressionDataset
 }
 
 
-def create_dataset(dataset_type, 
-                   unprivileged_groups, 
+def create_dataset(dataset_type,
+                   unprivileged_groups,
                    privileged_groups,
-                   **kwargs) -> DatasetWithBinaryLabelMetrics:
+                   **kwargs):
     dataset_type = dataset_type.lower()
     imputation_strategy = kwargs.pop('imputation_strategy', _imputations.DoNothingImputationStrategy())
     if 'wrap' in kwargs:
@@ -87,7 +106,11 @@ def create_dataset(dataset_type,
         imputed_df = imputation_strategy(kwargs['df'])
         kwargs['df'] = imputed_df
         dataset = _DATASET_TYPES[dataset_type](**kwargs)
-    return DatasetWithBinaryLabelMetrics(dataset, unprivileged_groups, privileged_groups)
+
+    if dataset_type == "binary label":
+        return DatasetWithBinaryLabelMetrics(dataset, unprivileged_groups, privileged_groups)
+    elif dataset_type == "regression":
+        return DatasetWithRegressionMetrics(dataset, unprivileged_groups, privileged_groups)
 
 
 __all__ = [
@@ -101,7 +124,6 @@ __all__ = [
     'DatasetWithBinaryLabelMetrics',
     'create_dataset',
 ]
-
 
 # keep this line at the bottom of this file
 aequitas.logger.debug("Module %s correctly loaded", __name__)

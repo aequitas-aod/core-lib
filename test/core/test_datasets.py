@@ -8,7 +8,8 @@ from test import (
     generate_multi_label_dataframe,
     generate_skewed_multi_label_dataframe,
     generate_multi_label_dataframe_with_scores,
-    generate_skewed_multi_label_dataframe_with_scores
+    generate_skewed_multi_label_dataframe_with_scores,
+    generate_skewed_regression_dataset
 )
 from test.core import AbstractMetricTestCase
 
@@ -214,6 +215,24 @@ class TestMulticlassLabelDataset(AbstractMetricTestCase):
             scores_names="score"
         )
         self.assertMultiLabelDataset(ds_skewed)
+
+
+class TestRegressionDataset(AbstractMetricTestCase):
+    def test_regression_dataset_creation_via_factory(self):
+        ds = create_dataset(dataset_type="regression",
+                            # parameters of aequitas.DatasetWithRegressionMetrics init
+                            unprivileged_groups=[{'color': 'b'}],
+                            privileged_groups=[{'color': 'r'}],
+                            # parameters of aequitas.StructuredDataset init
+                            imputation_strategy=MeanImputationStrategy(),
+                            # parameters of aif360.RegressionDataset init
+                            df=generate_skewed_regression_dataset(),
+                            dep_var_name='score',
+                            # parameters of aif360.StructuredDataset init
+                            protected_attribute_names=['color'],
+                            privileged_classes=[['r']]
+                            )
+        self.assertRegressionDataset(ds)
 
 
 class TestDataframeCreationFunctions(AbstractMetricTestCase):

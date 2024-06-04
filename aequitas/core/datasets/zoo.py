@@ -1,5 +1,5 @@
 import aequitas
-from aequitas.core.datasets import create_dataset, StandardDataset, DatasetWithBinaryLabelMetrics
+from aequitas.core.datasets import create_dataset, StandardDataset, DatasetWithBinaryLabelMetrics, DatasetWithRegressionMetrics
 from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
 from pathlib import Path
 import urllib.request

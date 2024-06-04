@@ -157,3 +157,10 @@ def generate_skewed_multi_label_dataframe_with_scores(rows: int = 1000, num_feat
     for i in range(num_features):
         feature_names.append("feat_" + str(i + 1))
     return pd.DataFrame(data, columns=feature_names + ['prot_attr', 'score', 'label'])
+
+
+def generate_skewed_regression_dataset() -> pd.DataFrame:
+    # taken from reranking example in the aif360 code
+    return pd.DataFrame(
+        [['r', 100], ['r', 90], ['r', 85], ['r', 70], ['b', 70], ['b', 60], ['b', 50], ['b', 40], ['b', 30], ['r', 20]],
+        columns=['color', 'score'])

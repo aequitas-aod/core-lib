@@ -11,7 +11,7 @@ class MissingValuesImputationStrategy(ABC):
 
 class MeanImputationStrategy(MissingValuesImputationStrategy):
     def __call__(self, df: pandas.DataFrame) -> pd.DataFrame:
-        return df.fillna(df.mean())
+        return df.fillna(df.mean(numeric_only=True))
     
 
 class DoNothingImputationStrategy(MissingValuesImputationStrategy):
