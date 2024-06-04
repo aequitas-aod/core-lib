@@ -71,8 +71,7 @@ class DatasetWithRegressionMetrics(DatasetWithMetrics):
         self.privileged_groups = privileged_groups
 
     def _new_metrics(self) -> _metrics.Metric:
-        print("Calling _new_metrics method in class DatasetWithRegressionMetrics")
-        return self.metrics_type(
+        return self._metrics_type(
             dataset=self._delegate,
             unprivileged_groups=self.unprivileged_groups,
             privileged_groups=self.privileged_groups
