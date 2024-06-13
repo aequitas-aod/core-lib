@@ -15,23 +15,23 @@ class TestDecorator(unittest.TestCase):
         self._x = self.DecoratedInt(1)
     
     def test_new_method(self):
-        self.assertEquals(2, self._x.next())
+        self.assertEqual(2, self._x.next())
 
     def test_new_attribute(self):
-        self.assertEquals(0, self._x.prev)
+        self.assertEqual(0, self._x.prev)
 
     def test_delegate(self):
-        self.assertEquals(1, self._x._delegate)
+        self.assertEqual(1, self._x._delegate)
 
     def test_delegate_method(self):
-        self.assertEquals(1, self._x.conjugate())
+        self.assertEqual(1, self._x.conjugate())
 
     def test_expressions(self):
-        self.assertEquals(2, self._x + 1)
-        self.assertEquals(0, self._x - 1)
-        self.assertEquals(2, self._x * 2)
-        self.assertEquals(0.5, self._x / 2)
-        self.assertEquals(0, self._x // 2)
+        self.assertEqual(2, self._x + 1)
+        self.assertEqual(0, self._x - 1)
+        self.assertEqual(2, self._x * 2)
+        self.assertEqual(0.5, self._x / 2)
+        self.assertEqual(0, self._x // 2)
 
     def test_comparison(self):
         self.assertTrue(self._x < 2)
@@ -42,17 +42,17 @@ class TestDecorator(unittest.TestCase):
         self.assertTrue(self._x != 2)
 
     def test_bitwise(self):
-        self.assertEquals(2, self._x << 1)
-        self.assertEquals(0, self._x >> 1)
-        self.assertEquals(1, self._x & 1)
-        self.assertEquals(1, self._x | 0)
-        self.assertEquals(0, self._x ^ 1)
+        self.assertEqual(2, self._x << 1)
+        self.assertEqual(0, self._x >> 1)
+        self.assertEqual(1, self._x & 1)
+        self.assertEqual(1, self._x | 0)
+        self.assertEqual(0, self._x ^ 1)
 
     def test_str(self):
-        self.assertEquals('1', str(self._x))
+        self.assertEqual('1', str(self._x))
 
     def test_repr(self):
-        self.assertEquals('1', repr(self._x))
+        self.assertEqual('1', repr(self._x))
 
     def test_dir(self):
         self.assertIn('prev', dir(self._x))
@@ -61,7 +61,7 @@ class TestDecorator(unittest.TestCase):
         self.assertIn('conjugate', dir(self._x))
 
     def test_hash_code(self):
-        self.assertEquals(1, hash(self._x))
+        self.assertEqual(1, hash(self._x))
 
     def test_not_subscriptable(self):
         with self.assertRaises(TypeError):
@@ -80,8 +80,8 @@ class TestOverridden(unittest.TestCase):
         self._x = self.DecoratedInt(1)
 
     def test_overridden_method(self):
-        self.assertEquals(-1, self._x.conjugate())
-        self.assertEquals(1, self._x._delegate.conjugate())
+        self.assertEqual(-1, self._x.conjugate())
+        self.assertEqual(1, self._x._delegate.conjugate())
 
 
 class TestDecoratedList(unittest.TestCase):
@@ -101,30 +101,30 @@ class TestDecoratedList(unittest.TestCase):
         self._x = self.DecoratedList([1, 2, 3])
     
     def test_head(self):
-        self.assertEquals(1, self._x.head)
+        self.assertEqual(1, self._x.head)
     
     def test_tail(self):
-        self.assertEquals([2, 3], self._x.tail)
+        self.assertEqual([2, 3], self._x.tail)
 
     def test_delete(self):
         del self._x[0]
-        self.assertEquals([2, 3], self._x)
+        self.assertEqual([2, 3], self._x)
 
     def test_append(self):
         self._x.append(4)
-        self.assertEquals([1, 2, 3, 4], self._x)
+        self.assertEqual([1, 2, 3, 4], self._x)
 
     def test_len(self):
-        self.assertEquals(3, len(self._x))
+        self.assertEqual(3, len(self._x))
 
     def test_iter(self):
-        self.assertEquals((1, 2, 3), tuple(self._x))
+        self.assertEqual((1, 2, 3), tuple(self._x))
 
     def test_str(self):
-        self.assertEquals('[1, 2, 3]', str(self._x))
+        self.assertEqual('[1, 2, 3]', str(self._x))
 
     def test_repr(self):
-        self.assertEquals('[1, 2, 3]', repr(self._x))
+        self.assertEqual('[1, 2, 3]', repr(self._x))
     
     def test_not_shiftable(self):
         with self.assertRaises(TypeError):
