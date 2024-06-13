@@ -106,7 +106,8 @@ def create_dataset(dataset_type,
         kwargs['df'] = imputed_df
         dataset = _DATASET_TYPES[dataset_type](**kwargs)
 
-    if dataset_type == "binary label":
+    binary_label_metrics = [k for k, v in _DATASET_TYPES.items() if v == BinaryLabelDataset or v == MulticlassLabelDataset]
+    if dataset_type in binary_label_metrics:
         return DatasetWithBinaryLabelMetrics(dataset, unprivileged_groups, privileged_groups)
     elif dataset_type == "regression":
         return DatasetWithRegressionMetrics(dataset, unprivileged_groups, privileged_groups)
