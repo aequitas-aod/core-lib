@@ -1,4 +1,4 @@
-aif360==0.6.0
+aif360==0.6.1
 pandas==2.2.1
 BlackBoxAuditing
 aif360[AdversarialDebiasing]
