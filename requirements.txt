@@ -5,7 +5,7 @@ aif360[AdversarialDebiasing]
 aif360[Reductions]
 aif360[inFairness]
 
-scikit-learn~=1.4.2
+scikit-learn~=1.5.1
 numpy~=1.26.4
 setuptools~=69.5.1
 tensorflow~=2.16.1
