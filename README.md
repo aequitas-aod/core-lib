@@ -11,4 +11,4 @@ The core library is the component which allows users (precisely developers among
 
 The library wraps the functionalities provided by the AIF360 library developed by IBM (https://aif360.res.ibm.com) while it also gives developers the possibility to add their own bias detection or bias mitigation techniques. More details on the library's whole structure and examples on how its functions can be used as part of code will be given in the next sections. 
 
-Overall, we stress that even if the core library is a critical component of the framework proposed by AEQUITAS, its other intended usage is as a standalone Python library for working on AI fairness.
+Overall, we stress that even if the core library is a critical component of the framework proposed by AEQUITAS, its other intended usage is as a standalone Python library for working on AI fairness. In this document it will be presented without describing how it ties to all the other pieces of the framework. The focus will strictly be on the functionalities it provides as a off the shelf library.
