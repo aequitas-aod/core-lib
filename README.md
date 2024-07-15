@@ -72,9 +72,9 @@ ds = create_dataset(
         )
 ```
 
-The only thing to note in this case, is that the `favorable_label` and `unfavorable_label` are assigned lists and not single values as it happened in the previous example.
+The only thing to note in this case, is that the `favorable_label` and `unfavorable_label` parameters are assigned lists and not single values as it happened in the previous example.
 
-Finally, to create a dataset for regression task, the call to `create_dataset` would be:
+Finally, to create a dataset for regression tasks, the call to `create_dataset` would be:
 
 ```python
 ds = create_dataset(
