@@ -1,3 +1,18 @@
+## [2.0.1](https://github.com/aequitas-aod/core-lib/compare/2.0.0...2.0.1) (2024-07-15)
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2.2.2 ([b061030](https://github.com/aequitas-aod/core-lib/commit/b061030a2461b5927a95a2f6029f3f9ad6ad9871))
+* **deps:** update dependency scikit-learn to ~=1.5.1 ([1150323](https://github.com/aequitas-aod/core-lib/commit/115032391522f767ea7cf5ecb9740b2f75ca34c0))
+
+
+### Documentation
+
+* update readme ([d22db40](https://github.com/aequitas-aod/core-lib/commit/d22db408a8c4387074989dd75ba395755f9eeb8f))
+* update readme ([8cd0f6a](https://github.com/aequitas-aod/core-lib/commit/8cd0f6a39c5e2092c3e32b99cc559ef82dbed69e))
+* update readme ([2564214](https://github.com/aequitas-aod/core-lib/commit/2564214039289c4de4760733e0e40379d3a53c48))
+
 ## [2.0.0](https://github.com/aequitas-aod/core-lib/compare/1.2.1...2.0.0) (2024-07-12)
 
 
