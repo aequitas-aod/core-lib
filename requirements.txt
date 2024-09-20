@@ -1,5 +1,5 @@
 aif360==0.6.1
-pandas==2.2.2
+pandas==2.2.3
 BlackBoxAuditing
 aif360[AdversarialDebiasing]
 aif360[Reductions]
