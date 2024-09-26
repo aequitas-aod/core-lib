@@ -1,3 +1,113 @@
+## [2.0.1](https://github.com/aequitas-aod/core-lib/compare/2.0.0...2.0.1) (2024-07-15)
+
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2.2.2 ([b061030](https://github.com/aequitas-aod/core-lib/commit/b061030a2461b5927a95a2f6029f3f9ad6ad9871))
+* **deps:** update dependency scikit-learn to ~=1.5.1 ([1150323](https://github.com/aequitas-aod/core-lib/commit/115032391522f767ea7cf5ecb9740b2f75ca34c0))
+
+
+### Documentation
+
+* update readme ([d22db40](https://github.com/aequitas-aod/core-lib/commit/d22db408a8c4387074989dd75ba395755f9eeb8f))
+* update readme ([8cd0f6a](https://github.com/aequitas-aod/core-lib/commit/8cd0f6a39c5e2092c3e32b99cc559ef82dbed69e))
+* update readme ([2564214](https://github.com/aequitas-aod/core-lib/commit/2564214039289c4de4760733e0e40379d3a53c48))
+
+## [2.0.0](https://github.com/aequitas-aod/core-lib/compare/1.2.1...2.0.0) (2024-07-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* aif360 integration
+
+### Features
+
+* add AdultDataset to dataset creation method ([d25df9b](https://github.com/aequitas-aod/core-lib/commit/d25df9be760481647ef7907d7c1dee4803fe00fc))
+* add metrics to MulticlassLabelDataset ([2abab38](https://github.com/aequitas-aod/core-lib/commit/2abab380dc96fb86636cf056b6f1c4b190c7eb17))
+* add score metrics for adult dataset ([766afd7](https://github.com/aequitas-aod/core-lib/commit/766afd78d88c1610913d59d39f17d47ee0c173f6))
+* add scores metrics to binary label dataset ([d88336c](https://github.com/aequitas-aod/core-lib/commit/d88336c8f9461deaa88ca74a0e759efc3f1a3d98))
+* add scores_metrics property to abstract StructuredDataset class ([ae3bdcd](https://github.com/aequitas-aod/core-lib/commit/ae3bdcd30c87532465714ac2426098bae553df2c))
+* add wrapper for mitigation techniques ([99c78ef](https://github.com/aequitas-aod/core-lib/commit/99c78ef2c3e8e2131ed573b0a2112edd798d426e))
+* aif360 integration ([7f2ce12](https://github.com/aequitas-aod/core-lib/commit/7f2ce12c7974c749c3995fbbfa3c8c15ea855dff))
+* copy paste adult preproc function ([dcd2553](https://github.com/aequitas-aod/core-lib/commit/dcd2553c81b6673b15c344708989d6004e9fbf99))
+* copy paste adult preproc function ([cde2565](https://github.com/aequitas-aod/core-lib/commit/cde256502e5ba5f37a2bb368a096956300ad48f9))
+* create AdultDataset class ([a0a0821](https://github.com/aequitas-aod/core-lib/commit/a0a08219bdd0644a29545e5d74c4c7f8c0aed720))
+* factory pattern for creating datasets ([b574912](https://github.com/aequitas-aod/core-lib/commit/b57491226b90e842262ce9b5ee561b5339e66045))
+* strategy pattern ([bb38128](https://github.com/aequitas-aod/core-lib/commit/bb38128344599a1b8bf61c088a8ba53993cb452f))
+* **test:** add nans ([60695e9](https://github.com/aequitas-aod/core-lib/commit/60695e9bd36d3757254dcf6baae8114c15b2a2c4))
+
+
+### Dependency updates
+
+* **deps:** update dependency aif360 to v0.6.1 ([02ac5c0](https://github.com/aequitas-aod/core-lib/commit/02ac5c0cf0154338a6c379a75a857170ea7b5be5))
+* **deps:** update dependency numpy to v1.26.3 ([762bb30](https://github.com/aequitas-aod/core-lib/commit/762bb30cc53e62811288e2cd42fa64e68d4590af))
+* **deps:** update dependency numpy to v1.26.4 ([86928fe](https://github.com/aequitas-aod/core-lib/commit/86928fe067267bea3662df2ba3e074fd2dbed024))
+* **deps:** update dependency scikit-learn to v1.4.0 ([aa5df9e](https://github.com/aequitas-aod/core-lib/commit/aa5df9e54b40f79605ea999d3ac6f284550547ec))
+* **deps:** update dependency scikit-learn to v1.4.1.post1 ([2deff1c](https://github.com/aequitas-aod/core-lib/commit/2deff1c0de6ebc2024305b4315279b36c9e20276))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.83 ([7d76278](https://github.com/aequitas-aod/core-lib/commit/7d762784d377292824b7f040eb4c305545251ed4))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.84 ([417fc57](https://github.com/aequitas-aod/core-lib/commit/417fc5721530406a69b41bce518f18f1c63a40a3))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.85 ([b215c6b](https://github.com/aequitas-aod/core-lib/commit/b215c6b9e61b6d079d787cc288b60ef4b5272a90))
+* **deps:** update node.js to 20.11 ([3f44e79](https://github.com/aequitas-aod/core-lib/commit/3f44e7969a862cda2518ada93a7373964c18c1f5))
+
+
+### Bug Fixes
+
+* add automatic download of real-world datasets ([040d55e](https://github.com/aequitas-aod/core-lib/commit/040d55e7f5c2024668386c3f71f9e62557bbe3b0))
+* add missing file for strategy pattern ([3599801](https://github.com/aequitas-aod/core-lib/commit/359980165870f0b2a1726060bcb153403d8d6376))
+* allow creation of MulticlassLabelDataset in create_dataset function ([cfdbe62](https://github.com/aequitas-aod/core-lib/commit/cfdbe62f30cbe2a29e9c10e237f3215640f9b86a))
+* binary label dataset toy creation ([781637a](https://github.com/aequitas-aod/core-lib/commit/781637a98fa448289443ebbfe090063eac90b7fe))
+* BinaryLabelDatasetScoresMetric.metrics ([9a7e657](https://github.com/aequitas-aod/core-lib/commit/9a7e6574e2af3351f7596fd72e43d6d372ca02a6))
+* change from properties to functions ([4fca5e6](https://github.com/aequitas-aod/core-lib/commit/4fca5e652c168fe1e8c4af74c38803fe4d81b700))
+* code-review and api ([fbcb4dd](https://github.com/aequitas-aod/core-lib/commit/fbcb4dd863076ec806ae491ee8e9c385d987af86))
+* create AdultDataset using zoo function ([ec3202d](https://github.com/aequitas-aod/core-lib/commit/ec3202d08836e6f7e07d3df32d93b2e2be10673c))
+* dataset creation ([a74060f](https://github.com/aequitas-aod/core-lib/commit/a74060f2ea44daf576ec3ed678c258f5f3bb922a))
+* factory pattern with multiple inheritance ([f0e0cd6](https://github.com/aequitas-aod/core-lib/commit/f0e0cd6bba18a15b0aa257335572b6e9018170ad))
+* imputation strategy works directly on the dataframe ([c32b124](https://github.com/aequitas-aod/core-lib/commit/c32b1244d3a636ef283f62f3f8bc5fbe9249ed0b))
+* move back to properties (to compute metrics) ([298ee34](https://github.com/aequitas-aod/core-lib/commit/298ee348f416b3b318f81d45fd1d0dde3f329669))
+* protected attribute generation ([1f60528](https://github.com/aequitas-aod/core-lib/commit/1f605288b6cd6a483f52f5587b92f10dabb8f9dd))
+* regression dataset metrics correctly instantiated ([98af99c](https://github.com/aequitas-aod/core-lib/commit/98af99cb9a05fd6384f866eaccdb923390390686))
+* test metrics ([b007d9b](https://github.com/aequitas-aod/core-lib/commit/b007d9b6ab8a633280d8bcbecef38054f81ad0d9))
+* **test:** move from prints to proper assertions ([cbf7948](https://github.com/aequitas-aod/core-lib/commit/cbf7948a8067899f789353cf00e3fc0a378a0a6f))
+
+
+### Tests
+
+* add more tests on metrics using labels ([ce891b2](https://github.com/aequitas-aod/core-lib/commit/ce891b272f36d991467385682b5f65256fc86829))
+* add skewed toy datasets ([abe15ed](https://github.com/aequitas-aod/core-lib/commit/abe15ed0628dd0def2cc94e96b9acff281586d1d))
+* add tests for skewed and not skewed datasets ([1faaa2d](https://github.com/aequitas-aod/core-lib/commit/1faaa2d417e96a22a05eef85edb12d961f74f85e))
+* adversarial debiasing ([e297ebc](https://github.com/aequitas-aod/core-lib/commit/e297ebc001e462a48b70663357b2c5b64586ad61))
+* creation of dataframe with nans (test imp. strat. next) ([a9f63df](https://github.com/aequitas-aod/core-lib/commit/a9f63df84797008602fbdead8c4691622ae92de7))
+* dataframe creation functions (also with nans) ([bc6685b](https://github.com/aequitas-aod/core-lib/commit/bc6685b9ee450b39f8f9a38dc7800ddb6e670a68))
+* init multi label dataset ([e38334c](https://github.com/aequitas-aod/core-lib/commit/e38334c0c394d5407dc10f2c77c64474d313f374))
+* instantiate metric class ([5c55ee9](https://github.com/aequitas-aod/core-lib/commit/5c55ee932d5fbbbebf9f558b301fd8ec2f80ca9f))
+* mean imputation strategy ([bcd5b2d](https://github.com/aequitas-aod/core-lib/commit/bcd5b2d8cef72a46fedd57fe8f01fcdf96a0e451))
+* refactoring + tests ([0bad1f1](https://github.com/aequitas-aod/core-lib/commit/0bad1f14d5d73e6ee94272d9f33305efdab9ebc7))
+* regressiondataset error ([6e7a2bc](https://github.com/aequitas-aod/core-lib/commit/6e7a2bcff83837fca9ab6020c441cfa95aefda66))
+* reweighing ([a4dbc3f](https://github.com/aequitas-aod/core-lib/commit/a4dbc3f9f97380874f6d04bd56958960a49b23af))
+* switch from assertEquals to assertEqual ([4dd7668](https://github.com/aequitas-aod/core-lib/commit/4dd766832dcba01f1584f2fca4ca010ad32c2c0f))
+* test adult preproc function ([f8fce95](https://github.com/aequitas-aod/core-lib/commit/f8fce9589450b9738067dd5323b71b895f69a435))
+* test dir on adult dataset ([90c444c](https://github.com/aequitas-aod/core-lib/commit/90c444c8668b5a24f48d05181d6761946215f944))
+* test factory pattern ([17c0552](https://github.com/aequitas-aod/core-lib/commit/17c0552fedaf1994fdcf241dd373227c462f698b))
+* test strategy pattern ([b429d61](https://github.com/aequitas-aod/core-lib/commit/b429d61c35f0aa311630513d24473ce043c67c99))
+
+
+### General maintenance
+
+* add missing package for AdultDataset ([c968820](https://github.com/aequitas-aod/core-lib/commit/c96882076048e4fad8e75267768a8826d251d634))
+* aif360 integration ([7177c2a](https://github.com/aequitas-aod/core-lib/commit/7177c2a9ef6f5e449bb4fe6f2e49c1f0a6426cc9))
+* aif360 integration ([6451c9f](https://github.com/aequitas-aod/core-lib/commit/6451c9f17f0a561ba1f46095755681ffb51e082a))
+* configure vs code ([1e0533f](https://github.com/aequitas-aod/core-lib/commit/1e0533f6c8f47e86143c0b4484c158f54a201d3b))
+* preserve "core" structure ([3165cd4](https://github.com/aequitas-aod/core-lib/commit/3165cd4f09e12af5d82b431c65a18605dcc5f1cb))
+* preserve "core" structure ([b49c578](https://github.com/aequitas-aod/core-lib/commit/b49c578b0266a0ef03d27e6709f3c550f69493bc))
+* update requirements ([d98700a](https://github.com/aequitas-aod/core-lib/commit/d98700a8b8ff2df0910fedf2075c99f5c66a7ba2))
+* update requirements ([c9d34fc](https://github.com/aequitas-aod/core-lib/commit/c9d34fcccc7a090c310c34548b362d24ea6200f9))
+
+
+### Refactoring
+
+* change behaviour of fancy metric ([2fd40ee](https://github.com/aequitas-aod/core-lib/commit/2fd40eea30eec526e3df28644bcd9ef74bec29a5))
+* change scores variable name ([d2d86d6](https://github.com/aequitas-aod/core-lib/commit/d2d86d6ece28b737ebd2d691556b8fe3151b5c80))
+
 ## [1.2.1](https://github.com/aequitas-aod/core-lib/compare/1.2.0...1.2.1) (2023-12-14)
 
 
