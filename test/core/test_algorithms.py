@@ -1,12 +1,12 @@
 import unittest
 import numpy as np
+import pandas as pd
 
 from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler
 from sklearn.linear_model import LogisticRegression
 
-
 from test.core import AbstractMetricTestCase
-
+from aequitas.core.imputation import *
 from aequitas.core.algorithms.preprocessing import *
 from aequitas.core.algorithms.postprocessing import *
 from aequitas.core.algorithms.inprocessing import *
@@ -72,11 +72,11 @@ class TestMitigationAlgorithms(AbstractMetricTestCase):
 
         sess = tf.Session()
         plain_model = AdversarialDebiasing(
-           privileged_groups=ds.privileged_groups,
-           unprivileged_groups=ds.unprivileged_groups,
-           scope_name='plain_classifier',
-           debias=False,
-           sess=sess
+            privileged_groups=ds.privileged_groups,
+            unprivileged_groups=ds.unprivileged_groups,
+            scope_name='plain_classifier',
+            debias=False,
+            sess=sess
         )
 
         plain_model.fit(train)
@@ -89,11 +89,11 @@ class TestMitigationAlgorithms(AbstractMetricTestCase):
         sess = tf.Session()
 
         debiased_model = AdversarialDebiasing(
-          privileged_groups=ds.privileged_groups,
-          unprivileged_groups=ds.unprivileged_groups,
-          scope_name='debiased_classifier',
-          debias=True,
-          sess=sess
+            privileged_groups=ds.privileged_groups,
+            unprivileged_groups=ds.unprivileged_groups,
+            scope_name='debiased_classifier',
+            debias=True,
+            sess=sess
         )
         debiased_model.fit(train)
 
@@ -102,6 +102,29 @@ class TestMitigationAlgorithms(AbstractMetricTestCase):
 
         self.assertMeanDifference(dataset=debiasing_train, dataset_skewed=nondebiasing_train)
         self.assertMeanDifference(dataset=debiasing_test, dataset_skewed=nondebiasing_test)
+
+    def test_deterministic_reranking(self):
+        balls = pd.DataFrame(
+            [['r', 100], ['r', 90], ['r', 85], ['r', 70], ['b', 70], ['b', 60], ['b', 50], ['b', 40], ['b', 30],
+             ['r', 20]],
+            columns=['color', 'score'])
+
+        balls_ds = create_dataset(
+            dataset_type="regression",
+            unprivileged_groups=[{'color': 'b'}],
+            privileged_groups=[{'color': 'r'}],
+            # parameters of aequitas.StructuredDataset init
+            imputation_strategy=DoNothingImputationStrategy(),
+            # parameters of aif360.RegressionDataset init
+            df=balls,
+            dep_var_name='score')
+
+        balls_ds.labels = np.transpose([balls['score']])
+
+        dr = DeterministicReranking(unprivileged_groups=[{'color': 0}], privileged_groups=[{'color': 1}])
+
+        fair_ranking = dr.fit_predict(dataset=balls_ds, rec_size=6, target_prop=[0.5, 0.5], rerank_type='Constrained')
+        fair_ranking.convert_to_dataframe()[0]
 
 
 if __name__ == '__main__':
