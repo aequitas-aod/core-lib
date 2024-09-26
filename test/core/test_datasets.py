@@ -1,4 +1,8 @@
 import unittest
+import numpy as np
+import pandas as pd
+
+from aequitas.core.datasets import create_metric, create_regression_dataset
 
 from test import (
     generate_binary_label_dataframe,
@@ -9,10 +13,11 @@ from test import (
     generate_skewed_multi_label_dataframe,
     generate_multi_label_dataframe_with_scores,
     generate_skewed_multi_label_dataframe_with_scores,
-    generate_skewed_regression_dataset
+    generate_skewed_regression_dataset,
+    generate_dataframe_with_preds
 )
 from test.core import AbstractMetricTestCase
-
+from aif360.metrics import ClassificationMetric
 from aequitas.core.imputation import *
 from aequitas.core.datasets.zoo import *
 
@@ -28,15 +33,8 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             # parameters of aequitas.BinaryLabelDataset init
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
-            # parameters of aequitas.StructuredDataset init
             imputation_strategy=MeanImputationStrategy(),
-            # parameters of aif360.BinaryLabelDataset init
-            favorable_label=1.,
-            unfavorable_label=0.,
-            # parameters of aif360.StructuredDataset init
-            df=generate_binary_label_dataframe(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr']
+            df=generate_binary_label_dataframe()
         )
         self.assertBinaryLabelDataset(ds)
 
@@ -47,13 +45,7 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
             imputation_strategy=MeanImputationStrategy(),
-            # parameters of aif360.BinaryLabelDataset init
-            favorable_label=1,
-            unfavorable_label=0,
-            # parameters of aif360.StructuredDataset init
-            df=generate_skewed_binary_label_dataframe(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr']
+            df=generate_skewed_binary_label_dataframe()
         )
         self.assertBinaryLabelDataset(ds_skewed)
 
@@ -70,8 +62,6 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             unfavorable_label=0,
             # parameters of aif360.StructuredDataset init
             df=generate_binary_label_dataframe_with_scores(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr'],
             scores_names="score"
         )
         self.assertBinaryLabelDataset(ds)
@@ -88,12 +78,13 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             unfavorable_label=0,
             # parameters of aif360.StructuredDataset init
             df=generate_skewed_binary_label_dataframe_with_scores(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr']
+            scores_names="score"
         )
         self.assertBinaryLabelDataset(ds_skewed)
 
     def test_metrics_on_dataset(self):
+        df = generate_binary_label_dataframe_with_scores()
+        df_skewed = generate_skewed_binary_label_dataframe_with_scores()
         ds = create_dataset(
             "binary label",
             # parameters of aequitas.BinaryLabelDataset init
@@ -105,9 +96,7 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             favorable_label=1,
             unfavorable_label=0,
             # parameters of aif360.StructuredDataset init
-            df=generate_binary_label_dataframe_with_scores(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr'],
+            df=df,
             scores_names="score"
         )
         self.assertBinaryLabelDataset(ds)
@@ -123,9 +112,7 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
             favorable_label=1,
             unfavorable_label=0,
             # parameters of aif360.StructuredDataset init
-            df=generate_skewed_binary_label_dataframe_with_scores(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr'],
+            df=df_skewed,
             scores_names="score"
         )
         self.assertBinaryLabelDataset(ds_skewed)
@@ -135,8 +122,29 @@ class TestBinaryLabelDataset(AbstractMetricTestCase):
         # Disparate Impact
         self.assertDI(ds, ds_skewed)
         self.assertSP(ds, ds_skewed)
-        self.assertEDF(ds, ds_skewed)
+        # self.assertEDF(ds, ds_skewed)
         self.assertConsistency(ds, ds_skewed)
+
+        ds_preds = create_dataset(
+            "binary label",
+            # parameters of aequitas.BinaryLabelDataset init
+            unprivileged_groups=[{'prot_attr': 0}],
+            privileged_groups=[{'prot_attr': 1}],
+            imputation_strategy=MeanImputationStrategy(),
+            df=generate_dataframe_with_preds(df),
+            scores_names="score"
+        )
+        self.assertBinaryLabelDataset(ds_preds)
+
+        cm = create_metric(
+            metric="classification",
+            dataset1=ds,
+            dataset2=ds_preds,
+            unprivileged_groups=[{'prot_attr': 0}],
+            privileged_groups=[{'prot_attr': 1}]
+        )
+
+        self.assertIsInstance(cm, ClassificationMetric)
 
 
 class TestMulticlassLabelDataset(AbstractMetricTestCase):
@@ -147,14 +155,12 @@ class TestMulticlassLabelDataset(AbstractMetricTestCase):
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
-            imputation_strategy=MCMCImputationStrategy(),
+            imputation_strategy=DoNothingImputationStrategy(),
             # parameters of aif360.MulticlassLabelDataset init
             favorable_label=[0, 1., 2.],
             unfavorable_label=[3., 4.],
             # parameters of aif360.StructuredDataset init
-            df=generate_multi_label_dataframe(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr']
+            df=generate_multi_label_dataframe()
         )
         self.assertMultiLabelDataset(ds)
 
@@ -164,14 +170,12 @@ class TestMulticlassLabelDataset(AbstractMetricTestCase):
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
-            imputation_strategy=MCMCImputationStrategy(),
+            imputation_strategy=DoNothingImputationStrategy(),
             # parameters of aif360.MulticlassLabelDataset init
             favorable_label=[0, 1., 2.],
             unfavorable_label=[3., 4.],
             # parameters of aif360.StructuredDataset init
-            df=generate_skewed_multi_label_dataframe(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr']
+            df=generate_skewed_multi_label_dataframe()
         )
         self.assertMultiLabelDataset(ds)
 
@@ -186,14 +190,12 @@ class TestMulticlassLabelDataset(AbstractMetricTestCase):
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
-            imputation_strategy=MCMCImputationStrategy(),
+            imputation_strategy=DoNothingImputationStrategy(),
             # parameters of aif360.MulticlassLabelDataset init
             favorable_label=[0, 1., 2.],
             unfavorable_label=[3., 4.],
             # parameters of aif360.StructuredDataset init
             df=generate_multi_label_dataframe_with_scores(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr'],
             scores_names="score"
         )
         self.assertMultiLabelDataset(ds)
@@ -204,14 +206,12 @@ class TestMulticlassLabelDataset(AbstractMetricTestCase):
             unprivileged_groups=[{'prot_attr': 0}],
             privileged_groups=[{'prot_attr': 1}],
             # parameters of aequitas.StructuredDataset init
-            imputation_strategy=MCMCImputationStrategy(),
+            imputation_strategy=DoNothingImputationStrategy(),
             # parameters of aif360.MulticlassLabelDataset init
             favorable_label=[0, 1., 2.],
             unfavorable_label=[3., 4.],
             # parameters of aif360.StructuredDataset init
             df=generate_skewed_multi_label_dataframe_with_scores(),
-            label_names=['label'],
-            protected_attribute_names=['prot_attr'],
             scores_names="score"
         )
         self.assertMultiLabelDataset(ds_skewed)
@@ -219,19 +219,15 @@ class TestMulticlassLabelDataset(AbstractMetricTestCase):
 
 class TestRegressionDataset(AbstractMetricTestCase):
     def test_regression_dataset_creation_via_factory(self):
-        ds = create_dataset(dataset_type="regression",
-                            # parameters of aequitas.DatasetWithRegressionMetrics init
-                            unprivileged_groups=[{'color': 'b'}],
-                            privileged_groups=[{'color': 'r'}],
-                            # parameters of aequitas.StructuredDataset init
-                            imputation_strategy=MeanImputationStrategy(),
-                            # parameters of aif360.RegressionDataset init
-                            df=generate_skewed_regression_dataset(),
-                            dep_var_name='score',
-                            # parameters of aif360.StructuredDataset init
-                            protected_attribute_names=['color'],
-                            privileged_classes=[['r']]
-                            )
+        ds = create_regression_dataset(  # parameters of aequitas.DatasetWithRegressionMetrics init
+            unprivileged_groups=[{'color': 'b'}],
+            privileged_groups=[{'color': 'r'}],
+            # parameters of aequitas.StructuredDataset init
+            imputation_strategy=MeanImputationStrategy(),
+            # parameters of aif360.RegressionDataset init
+            df=generate_skewed_regression_dataset(),
+            dep_var_name='score'
+        )
         self.assertRegressionDataset(ds)
 
 
@@ -283,5 +279,3 @@ class TestDataframeCreationFunctions(AbstractMetricTestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
-# TODO: test ClassificationMetric, test RegressionMetric

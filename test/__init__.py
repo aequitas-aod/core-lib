@@ -30,6 +30,13 @@ def add_nans(data_to_mask, nan_perc=0.1):
     return masked_arr
 
 
+def generate_dataframe_with_preds(df: pd.DataFrame, p=0.7):
+    # utility function to call when testing the ClassificationMetric class
+    new_df = df.copy()
+    new_df["label"] = np.array([x * bernoulli(p) for x in df["label"]])
+    return new_df
+
+
 def generate_binary_label_dataframe(rows: int = 1000, num_features: int = 2, nans=False) -> pd.DataFrame:
     features = random.uniform(0, 1, size=(rows, num_features))
     prot_attr = np.random.randint(2, size=(rows, 1))
