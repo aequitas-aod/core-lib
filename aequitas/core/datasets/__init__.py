@@ -90,8 +90,19 @@ _DATASET_TYPES = {
     "multi class": MulticlassLabelDataset,
     "binary": BinaryLabelDataset,
     "multiclass": MulticlassLabelDataset,
-    "multi": MulticlassLabelDataset
+    "multi": MulticlassLabelDataset,
+    "regression": RegressionDataset
 }
+
+
+def create_dataset(dataset_type, **kwargs):
+    if dataset_type not in _DATASET_TYPES:
+        raise ValueError(f"Unknown dataset type: {dataset_type}")
+    else:
+        if dataset_type == "regression":
+            return create_regression_dataset(**kwargs)
+        else:
+            return create_dataset1(dataset_type, **kwargs)
 
 
 def create_regression_dataset(unprivileged_groups,
@@ -119,24 +130,21 @@ def create_regression_dataset(unprivileged_groups,
                                         privileged_groups=privileged_groups)
 
 
-def create_dataset(dataset_type,
-                   unprivileged_groups=[{'prot_attr': 0}],
-                   privileged_groups=[{'prot_attr': 1}],
-                   imputation_strategy=_imputations.DoNothingImputationStrategy,
-                   favorable_label=1,
-                   unfavorable_label=0,
-                   df=None,
-                   label_names=['label'],
-                   scores_names=None,
-                   **kwargs
-                   ):
-    dataset_type = dataset_type.lower()
+def create_dataset1(dataset_type,
+                    unprivileged_groups=[{'prot_attr': 0}],
+                    privileged_groups=[{'prot_attr': 1}],
+                    imputation_strategy=_imputations.DoNothingImputationStrategy,
+                    favorable_label=1,
+                    unfavorable_label=0,
+                    df=None,
+                    label_names=['label'],
+                    scores_names=None,
+                    **kwargs
+                    ):
     # imputation_strategy = kwargs.pop('imputation_strategy', _imputations.DoNothingImputationStrategy())
     if 'wrap' in kwargs:
         dataset = kwargs.pop('wrap')
     else:
-        if dataset_type not in _DATASET_TYPES:
-            raise ValueError(f"Unknown dataset type: {dataset_type}")
         imputed_df = imputation_strategy(df)
         kwargs['df'] = imputed_df
         kwargs['favorable_label'] = favorable_label
