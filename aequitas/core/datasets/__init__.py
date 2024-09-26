@@ -130,8 +130,6 @@ def create_dataset(dataset_type,
                    scores_names=None,
                    **kwargs
                    ):
-    if df is None:
-        raise ValueError("parameter 'df' must not be None")
     dataset_type = dataset_type.lower()
     # imputation_strategy = kwargs.pop('imputation_strategy', _imputations.DoNothingImputationStrategy())
     if 'wrap' in kwargs:
