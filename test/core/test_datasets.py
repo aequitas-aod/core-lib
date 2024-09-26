@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from aequitas.core.datasets import create_metric, create_regression_dataset
+from aequitas.core.datasets import create_metric
 
 from test import (
     generate_binary_label_dataframe,
@@ -207,7 +207,9 @@ class TestMulticlassLabelDataset(AbstractMetricTestCase):
 
 class TestRegressionDataset(AbstractMetricTestCase):
     def test_regression_dataset_creation_via_factory(self):
-        ds = create_regression_dataset(  # parameters of aequitas.DatasetWithRegressionMetrics init
+        ds = create_dataset(
+            "regression",
+            # parameters of aequitas.DatasetWithRegressionMetrics init
             unprivileged_groups=[{'color': 'b'}],
             privileged_groups=[{'color': 'r'}],
             # parameters of aequitas.StructuredDataset init
