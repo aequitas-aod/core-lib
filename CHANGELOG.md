@@ -1,3 +1,18 @@
+## [2.1.1](https://github.com/aequitas-aod/core-lib/compare/2.1.0...2.1.1) (2024-09-26)
+
+### Bug Fixes
+
+* create_dataset takes only one positional argument (dataset_type) ([43b30b3](https://github.com/aequitas-aod/core-lib/commit/43b30b36a68de33ea8ed82b4bd2527b14f759a18))
+
+### Tests
+
+* deterministic reranking ([f723f7c](https://github.com/aequitas-aod/core-lib/commit/f723f7cb2069899b9d3864c20aad9dd7da720d42))
+* test datasets ([9785ff5](https://github.com/aequitas-aod/core-lib/commit/9785ff521efbb16a2ff350562542354d5c3032e4))
+
+### Refactoring
+
+* create dataset function wrapper ([8ab19d2](https://github.com/aequitas-aod/core-lib/commit/8ab19d244142f2126627074c13218828d5914198))
+
 ## [2.1.0](https://github.com/aequitas-aod/core-lib/compare/2.0.1...2.1.0) (2024-09-26)
 
 ### Features
