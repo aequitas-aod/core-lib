@@ -1,3 +1,55 @@
+## [2.1.0](https://github.com/aequitas-aod/core-lib/compare/2.0.1...2.1.0) (2024-09-26)
+
+### Features
+
+* wrap regression dataset and classification metric classes ([54aec09](https://github.com/aequitas-aod/core-lib/commit/54aec09fa8bfd2920e57e578732f6fe256fd8977))
+
+### Dependency updates
+
+* **deps:** update dependency pandas to v2.2.3 ([b39e2a4](https://github.com/aequitas-aod/core-lib/commit/b39e2a4b46d164d110d4b2f02b06013629d0571a))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.101 ([0b28ce4](https://github.com/aequitas-aod/core-lib/commit/0b28ce403e09ba38cd17565500503fee10aeb473))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.102 ([afc8c3d](https://github.com/aequitas-aod/core-lib/commit/afc8c3d0da0416658a4bb5104ec989ff2d827719))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.103 ([ab182b0](https://github.com/aequitas-aod/core-lib/commit/ab182b083299a35f5d52836284d3bbd1cca14024))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.104 ([6779670](https://github.com/aequitas-aod/core-lib/commit/6779670695729a2a13199857ff8c9726e5750ba2))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.105 ([a68c14e](https://github.com/aequitas-aod/core-lib/commit/a68c14e070a85703fa675ed4f3fb89122f2fa5b3))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.106 ([e7a82fb](https://github.com/aequitas-aod/core-lib/commit/e7a82fb31d22e32e818601c5ac6f4085c40cfe7f))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.107 ([129a8a3](https://github.com/aequitas-aod/core-lib/commit/129a8a3ac84aefe17509dc91a09d17ec9f16b476))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.92 ([5dea77d](https://github.com/aequitas-aod/core-lib/commit/5dea77d5e92652ef58fe98afa0ce0f42cba868b9))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.94 ([99222a1](https://github.com/aequitas-aod/core-lib/commit/99222a1dd184d5c2995f7957f2722f6eaa6f5f4d))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.95 ([1cd6282](https://github.com/aequitas-aod/core-lib/commit/1cd62823f234a58dd70ddbf4aa1d9051ad842b01))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.96 ([884ba37](https://github.com/aequitas-aod/core-lib/commit/884ba377bf31b1319827946763784f9ef6865809))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.97 ([28109cb](https://github.com/aequitas-aod/core-lib/commit/28109cb2b8e709babb4c88cbb0a012f71ba5639b))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.98 ([b9851c7](https://github.com/aequitas-aod/core-lib/commit/b9851c779e77634ee90440153a1981130e06eee0))
+* **deps:** update dependency semantic-release-preconfigured-conventional-commits to v1.1.99 ([b4fd8e7](https://github.com/aequitas-aod/core-lib/commit/b4fd8e7f4f5f875fc855cf32c50df87fe5f6a89c))
+* **deps:** update dependency setuptools to ~=71.1.0 ([d29921f](https://github.com/aequitas-aod/core-lib/commit/d29921f38134ea3c469c3b5460c09443333a966a))
+* **deps:** update dependency setuptools to ~=72.2.0 ([0491df2](https://github.com/aequitas-aod/core-lib/commit/0491df29a855cfddf4f9d262f856f61473a023d6))
+* **deps:** update dependency setuptools to ~=74.1.0 ([78726ab](https://github.com/aequitas-aod/core-lib/commit/78726ab19afd3e8b2e02afeae45697989693b47a))
+* **deps:** update dependency setuptools to ~=75.1.0 ([bbbd8f3](https://github.com/aequitas-aod/core-lib/commit/bbbd8f35514fd61f488cd9a322a6ce2cc08a0616))
+* **deps:** update dependency setuptools to v70 ([3d2f4d8](https://github.com/aequitas-aod/core-lib/commit/3d2f4d8b7e597616ebc60dc663b83dfe4a5f6e69))
+* **deps:** update dependency setuptools to v71 ([ec35b30](https://github.com/aequitas-aod/core-lib/commit/ec35b30b3136710579ca588c32171d550291e2f3))
+* **deps:** update dependency setuptools to v72 ([3090d0d](https://github.com/aequitas-aod/core-lib/commit/3090d0da0bd1de73d6c314acd24ff02e88eecc05))
+* **deps:** update dependency setuptools to v73 ([608fdd3](https://github.com/aequitas-aod/core-lib/commit/608fdd30fa16f8cd13c9e33c3cac6b950ec540bd))
+* **deps:** update dependency setuptools to v74 ([1a3164f](https://github.com/aequitas-aod/core-lib/commit/1a3164f8ae81e19b28b18239ebccd562ce61333a))
+* **deps:** update dependency setuptools to v75 ([2e217bb](https://github.com/aequitas-aod/core-lib/commit/2e217bb17fea8dc239c7b2a6e96ccaae46d96f95))
+* **deps:** update dependency tensorflow to ~=2.17.0 ([ed34aa1](https://github.com/aequitas-aod/core-lib/commit/ed34aa1301f03ca18ebdb22f3d0d0ed970a1b5fb))
+* **deps:** update node.js to 20.16 ([0972c7a](https://github.com/aequitas-aod/core-lib/commit/0972c7a92ff52d748c029af63d61c6196f988839))
+* **deps:** update node.js to 20.17 ([acec58f](https://github.com/aequitas-aod/core-lib/commit/acec58f16c246a5dd470fa80eef11dc123cfcede))
+
+### Bug Fixes
+
+* remove value error exception if df is None ([284c49e](https://github.com/aequitas-aod/core-lib/commit/284c49edd929d7b1f469c559f2a1312ac370ff11))
+
+### Tests
+
+* add tests ([201022d](https://github.com/aequitas-aod/core-lib/commit/201022dcae1a2a0d4eee4cc31b1cf0b209644159))
+* test datasets ([26c7c4d](https://github.com/aequitas-aod/core-lib/commit/26c7c4da528c3a680b48f5829db282953b1af297))
+
+### General maintenance
+
+* add some examples to the readme ([886b948](https://github.com/aequitas-aod/core-lib/commit/886b948d5ef374da4de99bade88395f8c7226d7f))
+* fix requirements ([0780e55](https://github.com/aequitas-aod/core-lib/commit/0780e55c7f824ff956373bef88340f03a4018d08))
+* **readme:** correct errors ([3c23aaa](https://github.com/aequitas-aod/core-lib/commit/3c23aaa79421af4b0997806bbc85fd0c9c5bed58))
+
 ## [2.0.1](https://github.com/aequitas-aod/core-lib/compare/2.0.0...2.0.1) (2024-07-15)
 
 
