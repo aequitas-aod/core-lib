@@ -52,4 +52,8 @@ def adult(unprivileged_groups=None, privileged_groups=None, **kwargs) -> Dataset
     sub_samp = kwargs.pop('sub_samp', None)
     balance = kwargs.pop('balance', None)
     dataset: StandardDataset = load_preproc_data_adult(protected_attributes, sub_samp, balance)
-    return create_dataset("binary", unprivileged_groups, privileged_groups, wrap=dataset, **kwargs)
+    return create_dataset("binary",
+                          unprivileged_groups=unprivileged_groups,
+                          privileged_groups=privileged_groups,
+                          wrap=dataset,
+                          **kwargs)
